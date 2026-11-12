@@ -6,7 +6,7 @@ import { ProgressBar, StatusPill } from "./Status";
 export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
-      href={`/projects/${project.id}`}
+      href={`/projects?id=${project.id}`}
       className="card group block p-5 transition hover:border-ember-500/30 hover:shadow-glow"
     >
       <div className="flex items-start justify-between gap-3">

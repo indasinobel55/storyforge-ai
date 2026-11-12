@@ -81,7 +81,7 @@ export default function NewProjectPage() {
             })),
         }),
       });
-      router.push(`/projects/${project.id}`);
+      router.push(`/projects?id=${project.id}`);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not create the project");
       setBusy(false);

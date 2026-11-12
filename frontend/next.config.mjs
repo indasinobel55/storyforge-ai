@@ -2,7 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  output: process.env.NEXT_OUTPUT_STANDALONE === "true" ? "standalone" : undefined,
+  output:
+    process.env.NEXT_OUTPUT_STANDALONE === "true"
+      ? "standalone"
+      : process.env.NEXT_OUTPUT_EXPORT === "true"
+        ? "export"
+        : undefined,
+  trailingSlash: process.env.NEXT_OUTPUT_EXPORT === "true",
+  images: { unoptimized: process.env.NEXT_OUTPUT_EXPORT === "true" },
   async rewrites() {
     if (process.env.NEXT_ALL_IN_ONE === "true") {
       return [{ source: "/api/:path*", destination: "http://127.0.0.1:8000/api/:path*" }];

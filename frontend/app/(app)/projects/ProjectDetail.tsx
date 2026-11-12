@@ -10,7 +10,7 @@ import { ProgressBar, StatusPill } from "@/components/Status";
 
 type Busy = string | null;
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
+export default function ProjectDetail({ projectId }: { projectId: string }) {
   const router = useRouter();
   const [project, setProject] = useState<Project | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
@@ -25,8 +25,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     async (quiet = false) => {
       try {
         const [detail, videoList] = await Promise.all([
-          api<Project>(`/api/projects/${params.id}`),
-          api<VideoList>(`/api/videos?project_id=${params.id}&limit=200`).catch(() => ({ items: [], total: 0 })),
+          api<Project>(`/api/projects/${projectId}`),
+          api<VideoList>(`/api/videos?project_id=${projectId}&limit=200`).catch(() => ({ items: [], total: 0 })),
         ]);
         setProject(detail);
         setVideos(videoList.items);
@@ -35,7 +35,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
         setError(caught instanceof Error ? caught.message : "Could not load this project");
       }
     },
-    [params.id],
+    [projectId],
   );
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setBusy(name);
     setNotice(null);
     try {
-      await api<Project>(`/api/projects/${params.id}${path}`, { method: "POST" });
+      await api<Project>(`/api/projects/${projectId}${path}`, { method: "POST" });
       await load();
       setNotice(success);
     } catch (caught) {
@@ -77,7 +77,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     if (!window.confirm("Delete this project and all of its media? This cannot be undone.")) return;
     setBusy("delete");
     try {
-      await api(`/api/projects/${params.id}`, { method: "DELETE" });
+      await api(`/api/projects/${projectId}`, { method: "DELETE" });
       router.push("/dashboard");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Delete failed");
@@ -88,7 +88,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   async function saveScene(scene: Scene) {
     setBusy(`scene-${scene.id}`);
     try {
-      await api<Scene>(`/api/projects/${params.id}/scenes/${scene.id}`, {
+      await api<Scene>(`/api/projects/${projectId}/scenes/${scene.id}`, {
         method: "PATCH",
         body: JSON.stringify({ prompt: draftPrompt }),
       });
@@ -105,7 +105,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   async function regeneratePrompt(scene: Scene) {
     setBusy(`regen-${scene.id}`);
     try {
-      const updated = await api<Scene>(`/api/projects/${params.id}/scenes/${scene.id}/regenerate-prompt`, {
+      const updated = await api<Scene>(`/api/projects/${projectId}/scenes/${scene.id}/regenerate-prompt`, {
         method: "POST",
       });
       setDraftPrompt(updated.prompt);
@@ -123,7 +123,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     try {
       const body = new FormData();
       body.append("file", file);
-      await api(`/api/projects/${params.id}/assets?kind=${kind}`, { method: "POST", body });
+      await api(`/api/projects/${projectId}/assets?kind=${kind}`, { method: "POST", body });
       await load(true);
       setNotice(`${titleCase(kind)} asset uploaded`);
     } catch (caught) {
