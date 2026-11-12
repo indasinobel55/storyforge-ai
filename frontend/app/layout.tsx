@@ -3,14 +3,21 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import ServiceWorker from "@/components/ServiceWorker";
 
+const basePath = process.env.NEXT_BASE_PATH || "";
+
 export const metadata: Metadata = {
   title: "StoryForge AI — AI Video Studio",
   description:
     "Turn a script into a complete multi-scene AI video. Cloud-first with a scoped local execution mode.",
-  manifest: "/manifest.webmanifest",
+  manifest: basePath
+    ? `${basePath}/manifest.webmanifest`
+    : "/manifest.webmanifest",
   applicationName: "StoryForge AI",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "StoryForge AI" },
-  icons: { icon: "/icon.svg", apple: "/icon.svg" },
+  icons: {
+    icon: basePath ? `${basePath}/icon.svg` : "/icon.svg",
+    apple: basePath ? `${basePath}/icon.svg` : "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {
