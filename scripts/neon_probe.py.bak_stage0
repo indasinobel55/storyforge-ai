@@ -1,0 +1,415 @@
+"""Secure, read-only Neon connectivity and schema probe.
+
+Accepts the pooled connection URL through hidden input (or ``DATABASE_URL``),
+keeps it in process memory only, and prints sanitized status markers. It never
+prints the URL, password, username, or the endpoint hostname.
+
+Usage (from the project root, on the network you want to test):
+
+    python scripts/neon_probe.py                   # hidden prompt, 3 attempts
+    python scripts/neon_probe.py --from-clipboard  # read the URL from the clipboard
+
+Chain performed, in order:
+  1. URL validation + scheme normalization (``postgres://`` / ``postgresql://``
+     -> ``postgresql+asyncpg://``).
+  2. DNS resolution of the exact hostname from the URL.
+  3. TCP connectivity to the exact port from the URL.
+  4. Asynchronous SQLAlchemy connect + ``SELECT 1``.
+  5. Read-only inspection: server version, database, schema, public tables,
+     Alembic revision, and a comparison against the ORM metadata.
+
+Safety guarantees:
+  * No DDL, no DML, no migrations, no metadata creation.
+  * ``AUTO_CREATE_SCHEMA`` is forced to ``false``.
+  * The async engine is disposed in a ``finally`` block.
+  * Errors are classified and sanitized before printing.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import getpass
+import os
+import socket
+import subprocess
+import sys
+from pathlib import Path
+
+from sqlalchemy.engine import URL, make_url
+
+EXPECTED_ALEMBIC_REVISION = "027fcf80b4b6"
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+
+# --------------------------------------------------------------------------- #
+# Sanitization helpers
+# --------------------------------------------------------------------------- #
+
+def _mask_host(host: str | None) -> str:
+    """Show only a stub of the endpoint label plus the registrable suffix."""
+    if not host:
+        return "-"
+    parts = host.split(".")
+    if len(parts) < 3:
+        # A two-label host is the whole host; never echo it.
+        return "***"
+    head = parts[0]
+    masked_head = (head[:2] + "***") if len(head) > 2 else "***"
+    return masked_head + "." + ".".join(parts[-2:])
+
+
+def _redact(message: str, url: str) -> str:
+    text = str(message)
+    text = text.replace(url, "<url-redacted>")
+    try:
+        parsed = make_url(url)
+        # Only substitute values long enough not to shred unrelated words.
+        if parsed.password and len(str(parsed.password)) >= 4:
+            text = text.replace(str(parsed.password), "<password-redacted>")
+        if parsed.username and len(str(parsed.username)) >= 4:
+            text = text.replace(str(parsed.username), "<user-redacted>")
+        if parsed.host and len(str(parsed.host)) >= 8:
+            text = text.replace(str(parsed.host), "<host-redacted>")
+    except Exception:
+        pass
+    return text.splitlines()[0][:200] if text else ""
+
+
+def _classify(exc: BaseException) -> str:
+    name = type(exc).__name__
+    text = (str(exc) or "").lower()
+    if isinstance(exc, (socket.gaierror,)):
+        return "DNS"
+    if "password" in text or "authentication" in text or "role" in text or "auth" in name.lower():
+        return "AUTH"
+    if "ssl" in text or "tls" in text or "certificate" in text:
+        return "TLS"
+    if isinstance(exc, (TimeoutError, asyncio.TimeoutError)) or "timeout" in text:
+        return "NETWORK_TIMEOUT"
+    if "refused" in text or "unreachable" in text or "could not connect" in text or "network" in text:
+        return "NETWORK"
+    return "OTHER"
+
+
+# --------------------------------------------------------------------------- #
+# URL preparation
+# --------------------------------------------------------------------------- #
+
+def _normalize_scheme(raw: str) -> tuple[str, bool]:
+    """Map libpq-style schemes onto the asyncpg SQLAlchemy driver."""
+    url = raw.strip().strip('"').strip("'")
+    changed = False
+    lowered = url.lower()
+    if lowered.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://") :]
+        changed = True
+    if url.lower().startswith("postgresql://"):
+        url = "postgresql+asyncpg://" + url[len("postgresql://") :]
+        changed = True
+    return url, changed
+
+
+def _prepare_engine_url(parsed: URL) -> tuple[str, set[str], dict]:
+    """Strip libpq-only SSL params and convert them into asyncpg connect args.
+
+    Neon's pooled URLs commonly include ``sslmode`` and ``channel_binding``.
+    asyncpg accepts neither as URL query parameters, so they are translated to
+    a ``ssl`` connect argument, preserving the TLS requirement.
+    """
+    query_keys = set(parsed.query.keys())
+    sslmode = parsed.query.get("sslmode")
+    ssl_value = parsed.query.get("ssl")
+
+    drop = [k for k in ("sslmode", "channel_binding", "ssl") if k in query_keys]
+    if drop:
+        parsed = parsed.difference_update_query(drop)
+
+    connect_args: dict = {"timeout": 20}
+    if sslmode or ssl_value:
+        mode = (sslmode or ssl_value or "").lower()
+        connect_args["ssl"] = False if mode == "disable" else True
+        print("SSL_MODE=" + (mode or "enabled"))
+    else:
+        print("SSL_MODE=url-default")
+
+    return parsed.render_as_string(hide_password=False), query_keys, connect_args
+
+
+# --------------------------------------------------------------------------- #
+# Diagnostics
+# --------------------------------------------------------------------------- #
+
+def _dns(host: str, port: int) -> tuple[bool, list[str], str]:
+    try:
+        infos = socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+        return True, sorted({i[4][0] for i in infos}), ""
+    except Exception as exc:  # noqa: BLE001 - category only
+        return False, [], f"{_classify(exc)} {type(exc).__name__} errno={getattr(exc, 'errno', None)}"
+
+
+async def _probe(engine_url: str, connect_args: dict) -> None:
+    from sqlalchemy import text
+    from sqlalchemy.ext.asyncio import create_async_engine
+
+    from backend.app.database import Base
+    from backend.app import models  # noqa: F401 - register ORM tables
+
+    expected_tables = set(Base.metadata.tables.keys())
+
+    engine = create_async_engine(
+        engine_url, echo=False, pool_pre_ping=True, connect_args=connect_args
+    )
+    try:
+        async with engine.connect() as conn:
+            value = (await conn.execute(text("SELECT 1"))).scalar()
+            print("NEON_CONNECTION=PASS")
+            print("NEON_SELECT_1=" + ("PASS" if value == 1 else "FAIL"))
+            if value != 1:
+                return
+            print("NEON_SELECT_1_VALUE=" + str(value))
+
+            version = (await conn.execute(text("select version()"))).scalar()
+            print("PG_VERSION_PREFIX=" + " ".join(str(version).split()[:2]))
+
+            database = (await conn.execute(text("select current_database()"))).scalar()
+            print("PG_DATABASE=" + str(database))
+
+            current_schema = (await conn.execute(text("select current_schema()"))).scalar()
+            print("PG_CURRENT_SCHEMA=" + str(current_schema))
+
+            schemas = [
+                row[0]
+                for row in (
+                    await conn.execute(
+                        text("select schema_name from information_schema.schemata order by 1")
+                    )
+                ).all()
+            ]
+            print("PG_SCHEMAS=" + ",".join(schemas))
+
+            tables = {
+                row[0]
+                for row in (
+                    await conn.execute(
+                        text(
+                            "select table_name from information_schema.tables "
+                            "where table_schema = 'public' order by 1"
+                        )
+                    )
+                ).all()
+            }
+            print("PG_TABLE_COUNT=" + str(len(tables)))
+            print("PG_TABLES=" + (",".join(sorted(tables)) if tables else "(empty)"))
+
+            missing = sorted(expected_tables - tables)
+            unexpected = sorted(tables - expected_tables)
+            print("ORM_EXPECTED_COUNT=" + str(len(expected_tables)))
+            print("PG_MISSING_COUNT=" + str(len(missing)))
+            if missing:
+                print("PG_MISSING=" + ",".join(missing[:15]) + ("..." if len(missing) > 15 else ""))
+            print("PG_UNEXPECTED_COUNT=" + str(len(unexpected)))
+            if unexpected:
+                print("PG_UNEXPECTED=" + ",".join(unexpected[:15]))
+
+            if not tables:
+                schema_status = "EMPTY"
+            elif expected_tables <= tables:
+                schema_status = "EXISTING"
+            elif tables & expected_tables:
+                schema_status = "PARTIAL"
+            else:
+                schema_status = "UNKNOWN"
+            print("NEON_SCHEMA_STATUS=" + schema_status)
+
+            if "alembic_version" in tables:
+                revisions = [
+                    row[0]
+                    for row in (
+                        await conn.execute(text("select version_num from alembic_version"))
+                    ).all()
+                ]
+                current = revisions[0] if revisions else None
+                print("PG_ALEMBIC_TABLE=True")
+                print("PG_ALEMBIC_REVISION=" + str(current))
+                if current == EXPECTED_ALEMBIC_REVISION:
+                    print("NEON_ALEMBIC_STATUS=MATCHED")
+                else:
+                    print("NEON_ALEMBIC_STATUS=DIFFERENT")
+            else:
+                print("PG_ALEMBIC_TABLE=False")
+                print("NEON_ALEMBIC_STATUS=ABSENT")
+
+            print("NEON_READ_ONLY_INSPECTION=PASS")
+    finally:
+        await engine.dispose()
+
+
+# --------------------------------------------------------------------------- #
+# Entry point
+# --------------------------------------------------------------------------- #
+
+def _from_clipboard() -> str | None:
+    """Return clipboard text without echoing it, or ``None`` when unavailable."""
+    try:
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-Command", "Get-Clipboard -Raw"],
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
+    except Exception:  # noqa: BLE001 - clipboard is best-effort
+        return None
+    if result.returncode != 0:
+        return None
+    return (result.stdout or "").strip()
+
+
+def _prompt_for_url() -> tuple[str, int]:
+    """Read the URL at a hidden prompt. Returns ``(url, exit_code)``."""
+    print(
+        "HINT=Right-click (or Ctrl+V) at the hidden prompt to paste, then press Enter. "
+        "If nothing pastes, copy the pooled URL in Neon and run: "
+        "python scripts/neon_probe.py --from-clipboard"
+    )
+    for attempt in (1, 2, 3):
+        try:
+            raw = getpass.getpass(
+                f"Paste pooled Neon DATABASE_URL (hidden input, attempt {attempt}/3): "
+            )
+        except KeyboardInterrupt:
+            print("NEON_CONFIG=BLOCKED_INTERRUPTED")
+            return "", 2
+        except EOFError:
+            print("NEON_CONFIG=BLOCKED_NO_CONSOLE_INPUT")
+            return "", 2
+        raw = raw.strip().strip('"').strip("'")
+        if raw:
+            return raw, 0
+        print("INPUT_EMPTY=RETRY")
+    print("NEON_CONFIG=BLOCKED_EMPTY_INPUT")
+    print(
+        "TIP=Hidden input received no text. Copy the pooled URL in Neon, then run: "
+        "python scripts/neon_probe.py --from-clipboard"
+    )
+    return "", 2
+
+
+def main() -> int:
+    os.environ["AUTO_CREATE_SCHEMA"] = "false"
+
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__)
+        return 0
+
+    raw = os.environ.get("DATABASE_URL", "").strip()
+    if not raw and "--from-clipboard" in sys.argv:
+        clipboard_value = _from_clipboard()
+        if not clipboard_value:
+            print("NEON_CONFIG=BLOCKED_EMPTY_CLIPBOARD")
+            return 2
+        raw = clipboard_value
+        print("INPUT_SOURCE=clipboard")
+    elif not raw:
+        # ``getpass`` reads the Windows console directly; without a console it
+        # blocks forever instead of raising. Fail fast rather than hang.
+        if not (sys.stdin.isatty() and sys.stdout.isatty()):
+            print("NEON_CONFIG=BLOCKED_NO_TTY")
+            return 2
+        raw, code = _prompt_for_url()
+        if code != 0:
+            return code
+    raw = raw.strip().strip('"').strip("'")
+
+    if not raw:
+        print("NEON_CONFIG=BLOCKED_EMPTY_INPUT")
+        return 2
+
+    normalized, changed = _normalize_scheme(raw)
+    try:
+        parsed = make_url(normalized)
+    except Exception as exc:  # noqa: BLE001
+        print("NEON_CONFIG=FAIL_INVALID_URL")
+        print("NEON_CONFIG_ERROR_CLASS=" + type(exc).__name__)
+        print("NEON_CONFIG_ERROR_SANITIZED=" + _redact(str(exc), normalized))
+        return 2
+
+    if not parsed.drivername.startswith("postgresql"):
+        print("NEON_CONFIG=FAIL_NOT_POSTGRESQL")
+        return 2
+
+    host = parsed.host
+    port = parsed.port or 5432
+
+    print("NEON_CONFIG=PRESENT")
+    print("SCHEME=" + parsed.drivername)
+    print("SCHEME_NORMALIZED=" + str(changed))
+    print("HOST_MASKED=" + _mask_host(host))
+    print("PORT=" + str(port))
+    print("DATABASE=" + str(parsed.database or "-"))
+    print("USER_PRESENT=" + str(parsed.username is not None))
+    print("PASSWORD_PRESENT=" + str(parsed.password is not None))
+    print("QUERY_KEYS=" + ",".join(sorted(parsed.query.keys())))
+
+    if not host:
+        print("NEON_DNS=FAIL_NO_HOST")
+        print("NEON_TCP=NOT STARTED")
+        print("NEON_CONNECTION=NOT STARTED")
+        print("NEON_SELECT_1=NOT STARTED")
+        print("NEON_READ_ONLY_INSPECTION=NOT STARTED")
+        print("NEON_SCHEMA_STATUS=UNKNOWN")
+        print("NEON_ALEMBIC_STATUS=UNKNOWN")
+        return 1
+
+    dns_ok, ips, dns_error = _dns(host, port)
+    print("NEON_DNS=" + ("PASS" if dns_ok else "FAIL"))
+    if dns_ok:
+        v4 = [ip for ip in ips if ":" not in ip]
+        v6 = [ip for ip in ips if ":" in ip]
+        print("NEON_DNS_IPV4_COUNT=" + str(len(v4)))
+        print("NEON_DNS_IPV6_COUNT=" + str(len(v6)))
+        print("NEON_DNS_IPS=" + ",".join(ips))
+    else:
+        print("NEON_DNS_ERROR=" + dns_error)
+        print("NEON_TCP=NOT STARTED")
+        print("NEON_CONNECTION=NOT STARTED")
+        print("NEON_SELECT_1=NOT STARTED")
+        print("NEON_READ_ONLY_INSPECTION=NOT STARTED")
+        print("NEON_SCHEMA_STATUS=UNKNOWN")
+        print("NEON_ALEMBIC_STATUS=UNKNOWN")
+        return 1
+
+    try:
+        with socket.create_connection((host, port), timeout=10):
+            pass
+        print("NEON_TCP=PASS")
+    except Exception as exc:  # noqa: BLE001
+        print("NEON_TCP=FAIL CATEGORY=" + _classify(exc) + " CLASS=" + type(exc).__name__)
+        print("NEON_CONNECTION=NOT STARTED")
+        print("NEON_SELECT_1=NOT STARTED")
+        print("NEON_READ_ONLY_INSPECTION=NOT STARTED")
+        print("NEON_SCHEMA_STATUS=UNKNOWN")
+        print("NEON_ALEMBIC_STATUS=UNKNOWN")
+        return 1
+
+    engine_url, _query_keys, connect_args = _prepare_engine_url(parsed)
+
+    try:
+        asyncio.run(_probe(engine_url, connect_args))
+    except Exception as exc:  # noqa: BLE001
+        print("NEON_CONNECTION=FAIL")
+        print("NEON_SELECT_1=FAIL")
+        print("NEON_CONNECTION_ERROR_CATEGORY=" + _classify(exc))
+        print("NEON_CONNECTION_ERROR_CLASS=" + type(exc).__name__)
+        print("NEON_CONNECTION_ERROR_SANITIZED=" + _redact(str(exc), engine_url))
+        print("NEON_READ_ONLY_INSPECTION=NOT STARTED")
+        print("NEON_SCHEMA_STATUS=UNKNOWN")
+        print("NEON_ALEMBIC_STATUS=UNKNOWN")
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

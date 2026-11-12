@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Cyber-Vanguard tokens ─────────────────────────────────────────────
+   ☀️ Light: chalk canvas / steel structure / velvet black text
+   🌙 Dark:  onyx canvas / metallic slate structure / frost silver text
+   Accent (both): High-Volt Acid Green #CCFF00
+------------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+  --cv-canvas: 251 251 251;      /* #FBFBFB Pure Chalk White */
+  --cv-structural: 226 232 240;  /* #E2E8F0 Steel Grid Line */
+  --cv-fg: 15 17 21;             /* #0F1115 Velvet Black */
+  --cv-fg-soft: 39 44 52;
+  --cv-muted: 100 110 125;
+  --cv-line: 226 232 240;        /* #E2E8F0 */
+  --cv-accent: 204 255 0;        /* #CCFF00 High-Volt Acid Green */
+  --cv-accent-ink: 10 11 13;     /* text on accent */
+  --cv-grid: 15 17 21;           /* grid lines drawn in fg for light mode */
+}
+
+.dark {
+  color-scheme: dark;
+  --cv-canvas: 10 11 13;         /* #0A0B0D Deep Charcoal Onyx */
+  --cv-structural: 26 28 35;     /* #1A1C23 Dark Metallic Slate */
+  --cv-fg: 241 245 249;          /* #F1F5F9 Frost Silver */
+  --cv-fg-soft: 203 213 225;
+  --cv-muted: 148 160 178;
+  --cv-line: 26 28 35;
+  --cv-accent: 204 255 0;        /* #CCFF00 */
+  --cv-accent-ink: 10 11 13;
+  --cv-grid: 255 255 255;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-canvas text-foreground antialiased;
+  background-image:
+    linear-gradient(to right, rgb(var(--cv-grid) / 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--cv-grid) / 0.5) 1px, transparent 1px),
+    radial-gradient(900px 500px at 12% -10%, rgb(var(--cv-accent) / 0.07), transparent 60%),
+    radial-gradient(700px 400px at 88% 0%, rgb(var(--cv-accent) / 0.05), transparent 60%);
+  background-size:
+    72px 72px,
+    72px 72px,
+    100% 100%,
+    100% 100%;
+}
+
+.dark body {
+  background-image:
+    linear-gradient(to right, rgb(var(--cv-grid) / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--cv-grid) / 0.06) 1px, transparent 1px),
+    radial-gradient(900px 500px at 12% -10%, rgb(var(--cv-accent) / 0.08), transparent 60%),
+    radial-gradient(700px 400px at 88% 0%, rgb(var(--cv-accent) / 0.05), transparent 60%);
+  background-size:
+    72px 72px,
+    72px 72px,
+    100% 100%,
+    100% 100%;
+}
+
+::selection {
+  background: rgb(var(--cv-accent) / 0.35);
+  color: rgb(var(--cv-fg));
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-foreground/10 bg-structural/70 shadow-lg shadow-black/10 backdrop-blur;
+  }
+  .dark .card {
+    @apply bg-structural/80 shadow-black/30;
+  }
+  .card-hl {
+    @apply relative overflow-hidden;
+  }
+  .card-hl::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 h-px;
+    background: linear-gradient(90deg, transparent, rgb(var(--cv-accent) / 0.7), transparent);
+  }
+  .input {
+    @apply w-full rounded-xl border border-foreground/15 bg-canvas/60 px-3.5 py-2.5 text-sm text-foreground outline-none transition placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+  .dark .input {
+    @apply bg-white/[0.03];
+  }
+  .label {
+    @apply mb-1.5 block font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-accent-ink hover:shadow-glow-sm;
+  }
+  .btn-secondary {
+    @apply btn border border-foreground/10 bg-foreground/[0.04] text-foreground hover:bg-foreground/[0.08];
+  }
+  .btn-danger {
+    @apply btn border border-rose-500/30 bg-rose-500/10 text-rose-500 dark:text-rose-300 hover:bg-rose-500/20;
+  }
+  .btn-ghost {
+    @apply btn text-muted hover:bg-foreground/[0.05] hover:text-foreground;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-foreground/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted;
+  }
+  .chip-accent {
+    @apply border-accent/40 bg-accent/10 text-foreground dark:text-accent;
+  }
+  .link {
+    @apply text-foreground underline decoration-accent decoration-2 underline-offset-4 hover:decoration-accent/50;
+  }
+  .panel-tag {
+    @apply inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted;
+  }
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgb(var(--cv-fg) / 0.15);
+  border-radius: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--cv-accent) / 0.5);
+}

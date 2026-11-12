@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "created_at": "2026-11-07T14:36:50+05:30",
+  "title": "The Blue Diamond",
+  "logline": "A polished blue diamond floats above black velvet in a dark vault. The camera slowly orbits it as blue light pulses across the walls. The diamond rises and a hidden mechanism awakens.",
+  "style": "cinematic photorealistic short film, 35mm lens, shallow depth of field, natural film grain, consistent color grade",
+  "tier": "fast",
+  "orientation": "landscape",
+  "scene_seconds": 8,
+  "source": "A polished blue diamond floats above black velvet in a dark vault. The camera slowly orbits it as blue light pulses across the walls. The diamond rises and a hidden mechanism awakens.",
+  "provider": "fallback",
+  "scenes": [
+    {
+      "index": 1,
+      "duration": 8,
+      "title": "Scene 1: A polished blue diamond floats above black",
+      "narration": "A polished blue diamond floats above black velvet in a dark vault. The camera slowly orbits it as blue light pulses across the walls.",
+      "visual": "A polished blue diamond floats above black velvet in a dark vault. The camera slowly orbits it as blue light pulses across the walls.",
+      "camera": "slow dolly-in, 35mm lens, shallow depth of field",
+      "lighting": "cool moonlight with volumetric haze",
+      "continuity": "Establish the protagonist, wardrobe, environment, and color grade for the entire film.",
+      "prompt": "Create an 8-second cinematic shot for the short film \"The Blue Diamond\".\nSTORY BEAT: A polished blue diamond floats above black velvet in a dark vault. The camera slowly orbits it as blue light pulses across the walls.\nVISUAL: A polished blue diamond floats above black velvet in a dark vault. The camera slowly orbits it as blue light pulses across the walls.\nCAMERA: slow dolly-in, 35mm lens, shallow depth of field\nLIGHTING: cool moonlight with volumetric haze\nCONTINUITY: Establish the protagonist, wardrobe, environment, and color grade for the entire film.\nSTYLE: cinematic photorealistic short film, 35mm lens, shallow depth of field, natural film grain, consistent color grade\nPhotorealistic, highly detailed, coherent motion, natural physics. No text, no subtitles, no captions, no logos, no watermarks. Preserve the same characters, wardrobe, props, environment, and color grade throughout the film.",
+      "status": "succeeded",
+      "job_id": "fe104cc4-76c9-4324-a63e-468bb9dea8f8",
+      "video_url": "https://taaft-videogen.b-cdn.net/m/w/u/wuvomc4wv54dbggd5hzaickqta.mp4",
+      "local_video": "C:\\AI_Video_Studio\\outputs\\taaft_diamond_fe104cc4.mp4",
+      "last_frame": "C:\\AI_Video_Studio\\outputs\\scenes\\the-blue-diamond\\scene_001_last.png",
+      "error": null,
+      "attempts": 1,
+      "mode": "t2v",
+      "segment_index": 0,
+      "resolution": "1280x704",
+      "duration_actual": 8.041667,
+      "fps": 24.0
+    },
+    {
+      "index": 2,
+      "duration": 8,
+      "title": "Scene 2: The diamond rises and a hidden mechanism",
+      "narration": "The diamond rises, and a hidden mechanism awakens beneath the velvet.",
+      "visual": "The blue diamond rises above black velvet as hidden brass gears and ancient mechanisms awaken in the dark vault.",
+      "camera": "slow cinematic dolly-out, 35mm lens, shallow depth of field",
+      "lighting": "cool moonlight with volumetric haze and pulsing blue practical light",
+      "continuity": "Continue seamlessly from the previous final frame; preserve the diamond, black velvet, vault environment, and cool blue color grade.",
+      "prompt": "Continue seamlessly from the last frame of the previous shot. The camera slowly pulls back as the blue diamond rises above the black velvet. Hidden brass gears and ancient mechanisms awaken beneath it, rotating in the dark. Blue light pulses across the vault walls, revealing engraved symbols. Slow cinematic dolly-out, 35mm lens, shallow depth of field, cool moonlight with volumetric haze. Preserve the same diamond, black velvet, vault environment, and cool blue color grade. Photorealistic, highly detailed, coherent motion. No text, no subtitles, no captions, no logos, no watermarks.",
+      "status": "succeeded",
+      "job_id": "211075f2-6fc6-4470-8844-0b337b922328",
+      "video_url": "https://taaft-videogen.b-cdn.net/m/g/c/gc23q5miht3eh3sir6vmv7zc6q.mp4",
+      "local_video": "C:\\AI_Video_Studio\\outputs\\scenes\\the-blue-diamond\\scene_002.mp4",
+      "last_frame": "C:\\AI_Video_Studio\\outputs\\scenes\\the-blue-diamond\\scene_002_last.png",
+      "error": null,
+      "attempts": 1,
+      "parent_id": "fe104cc4-76c9-4324-a63e-468bb9dea8f8",
+      "segment_index": 1,
+      "prompt_sent": "Continue seamlessly from the last frame of the previous shot. The camera slowly pulls back as the blue diamond rises above the black velvet. Hidden brass gears and ancient mechanisms awaken beneath it, rotating in the dark. Blue light pulses across the vault walls, revealing engraved symbols. Slow cinematic dolly-out, 35mm lens, shallow depth of field, cool moonlight with volumetric haze. Preserve the same diamond, black velvet, vault environment, and cool blue color grade. Photorealistic, highly detailed, coherent motion. No text, no subtitles, no captions, no logos, no watermarks.",
+      "mode": "i2v",
+      "duration_actual": 8.041667,
+      "resolution": "1280x704",
+      "fps": 24.0
+    }
+  ],
+  "sessions": [
+    {
+      "name": "Session 1",
+      "scene_indices": [
+        1,
+        2
+      ],
+      "status": "pending"
+    }
+  ],
+  "final_video": "C:\\AI_Video_Studio\\outputs\\the-blue-diamond_final.mp4",
+  "completed_at": "2026-11-07T14:59:06+05:30"
+}

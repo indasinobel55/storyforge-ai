@@ -1,0 +1,948 @@
+# HOLLOWTHORN — THE GUARDIAN OF THE FLEECE
+Complete 54-Scene Cinematic Video Generation Prompt (No Narration Version)
+
+Total Runtime: 7 minutes, 12 seconds
+Scene Count: 54
+Duration: Exactly 8 seconds per scene
+Genre: Gothic Dark Fantasy / Emotional Adventure
+Visual Style: Hand-Drawn Gothic Metroidvania
+Narration: None
+Dialogue: None
+Character Lip Movement: None
+
+--- 
+
+# MASTER INSTRUCTIONS — APPLY TO THE ENTIRE FILM
+
+Create a cinematic dark-fantasy animated film titled HOLLOWTHORN — THE GUARDIAN OF THE FLEECE.
+
+Adapt the supplied novella faithfully. Preserve its five-chapter story arc, character relationships, emotional progression, important events, and ending. Do not invent new characters, new story revelations, or additional powers.
+
+Every scene must be exactly 8 seconds long. The complete film must contain exactly 54 scenes, with a total runtime of 7 minutes and 12 seconds.
+
+## 1. VISUAL ART DIRECTION
+
+Use a consistent Hand-Drawn Gothic Metroidvania aesthetic throughout the entire film.
+
+The visual language should feature:
+- Intricate hand-drawn environments with delicate ink outlines.
+- Atmospheric gothic architecture, ruined monasteries, forgotten kingdoms, enormous underground chambers, and ancient forests.
+- Layered 2D illustrated backgrounds with painterly depth.
+- Expressive, carefully animated character silhouettes.
+- Detailed environmental textures: cracked stone, twisted roots, thorny vines, moss, ash, frost, weathered metal, and ancient bones.
+- Dramatic lighting with deep shadows, atmospheric fog, subtle particle effects, and carefully controlled magical illumination.
+- Elegant, fluid animation rather than exaggerated cartoon movement.
+- A cinematic composition inspired by the atmosphere of hand-drawn gothic exploration games, without copying any existing game's characters, locations, assets, or designs.
+
+The world should initially feel cold, hostile, abandoned, and almost lifeless. As the story progresses, subtle warmth and beauty should emerge around the Bramble Cloister. The final scenes should transform the same dark world into something peaceful and alive.
+
+**Visual progression:**
+- Opening: desaturated grey, ash, frost, black branches, and distant ruins.
+- Labyrinth: deep charcoal, thorn-black silhouettes, sickly green undertones, and unsettling shadows.
+- Bramble Cloister: pale moonlight, white lilies, soft silver-blue illumination, and warm natural details.
+- Cinder Tiger: burning copper, furnace orange, black smoke, and threatening red highlights.
+- Weaver-Fleece magic: luminous silver threads, delicate white light, and restrained magical effects.
+- Ending: pale gold dawn, fresh green, white flowers, clear water, and warm silver light.
+
+## 2. CHARACTER DESIGN CONSISTENCY
+
+Maintain the exact same character designs, proportions, colours, markings, and accessories throughout the entire film.
+
+**GARROW — The Wandering Wolf**
+A large, lean, ash-grey wolf. His original storm-grey coat is dulled by soot, frost, and years of wandering. He has a distinct torn left ear, weathered paws, visible scars, and tired but expressive amber-grey eyes. His body initially appears weak and malnourished. As he heals, his coat becomes healthier, but his scars remain. In the climax, fine silver filaments form a mantle across his shoulders and back. The mantle is delicate and organic, never heavy armour.
+
+**PIP — The Eldest Lamb**
+A small white lamb with clean fleece and calm, thoughtful eyes. He is observant, steady, practical, and protective of the other lambs. His movements are careful and deliberate. He knows the hidden cisterns, root cellars, and edible growth within the cloister.
+
+**BRAM — The Smallest Lamb**
+A small, playful white lamb with a dark muzzle. He is restless, curious, brave, and affectionate. He frequently approaches unfamiliar things without hesitation. His courage should be visible even when his legs tremble. During the attack, his fleece becomes singed and he receives a dark wound on his flank. He must remain alive and visibly wounded until his rescue.
+
+**OONA — The Quiet Lamb**
+A small white lamb with a gentle, peaceful appearance. She is quieter than the others, collects flowers, and hums softly. Her movements are graceful and thoughtful. Her humming is an important part of the magic, but she must never speak or visibly form words.
+
+**AETHELGARD — The Cinder Tiger**
+An enormous, broad-shouldered tiger with fur the colour of a dying furnace. Black stripes glow faintly as though coals smoulder beneath his skin. Rusted snare cables loop around his throat and shoulders. His eyes are fever-bright yellow. His movements are powerful, heavy, and frightening. Beneath the curse, he is Aethel, the former Alpha of Garrow's ancestral pack. His true appearance includes a familiar muzzle, a scar over the brow, and a left ear notched by an old battle.
+
+## 3. CHARACTER AND ANIMATION RULES
+
+- No character dialogue at all.
+- No spoken words from any character.
+- No narrator, voiceover, or spoken commentary of any kind.
+- No visible lip-sync or mouth movements suggesting speech.
+- No subtitles or on-screen text representing speech or narration.
+- All storytelling must be delivered purely through visuals, character performance, music, and sound design.
+- Characters may express themselves through movement, posture, facial expressions, gestures, and nonverbal sounds.
+- Lambs may hum or bleat as nonverbal sounds where the story requires it. These are part of the soundtrack, not dialogue.
+- Garrow may growl, breathe heavily, or whimper, but must never speak.
+- Maintain believable anatomy and movement.
+- Do not make the lambs look like human children wearing animal costumes.
+- Do not make Garrow overly muscular or invincible.
+- Do not turn the Silver-Weave Mantle into an unlimited combat power.
+- Keep all injuries and character conditions consistent between scenes.
+
+## 4. CAMERA AND EDITING RULES
+
+- Use cinematic camera movement: slow tracking shots, controlled pans, dramatic close-ups, low-angle shots, wide establishing shots, and atmospheric reveals.
+- Each scene should contain a clear visual focus.
+- Use transitions that preserve geographical and narrative continuity.
+- Avoid random camera movement.
+- Do not change locations abruptly within a scene unless the transition is intentional and visually clear.
+- Use the final frame of one scene to establish the opening composition of the next wherever possible.
+- Keep character positions and movement directions consistent.
+- Avoid excessive fast cuts.
+- Use silence and restrained sound design to build tension.
+- Let emotional moments breathe.
+- Because there is no narration, let the music, sound design, and expressive character performance carry the emotional meaning of every scene.
+
+---
+
+# COMPLETE SCREENPLAY
+
+# CHAPTER ONE — THE LABYRINTH OF SHIFTING THORNS
+
+## SCENE 01 — THE DEAD KINGDOMS
+Duration: 00:00–00:08 | 8 seconds
+
+**VISUAL DIRECTION:**
+Begin with an enormous cinematic establishing shot of a dead kingdom beneath a low ceiling of storm clouds. Broken towers rise from the horizon like the remains of forgotten giants. Sleet travels diagonally across the frame. The camera slowly descends past a shattered stone arch, revealing the black waters of the Ashen Fen below. Dead trees lean over the landscape, their branches stripped bare. The entire world feels abandoned, with no signs of living civilisation.
+
+**CAMERA:** Slow aerial descent, ending in a wide landscape composition.
+
+**LIGHTING AND ATMOSPHERE:** Cold grey daylight, heavy fog, drifting sleet, desaturated colour palette.
+
+**SOUND DESIGN:** Cold wind, distant thunder, faint creaking stone, low atmospheric orchestral drone.
+
+--- 
+
+## SCENE 02 — THE LAST WANDERER
+Duration: 00:08–00:16 | 8 seconds
+
+**VISUAL DIRECTION:**
+Reveal Garrow climbing the steep, frozen slopes of Weeping Ridge. The camera follows behind his tired body as his paws struggle against loose shale. Move into a side profile, showing his ash-grey coat, torn left ear, and exhausted expression. His ribs are subtly visible beneath his weathered fur. One paw leaves a faint red mark against the frost-covered stone. He pauses, lowers his head against the sleet, and continues climbing.
+
+**CAMERA:** Low-angle tracking shot followed by a close-up of his injured paw.
+
+**LIGHTING AND ATMOSPHERE:** Pale grey sky, frost-covered rocks, cold wind moving his fur.
+
+**SOUND DESIGN:** Heavy breathing, claws scraping stone, wind passing across the ridge.
+
+--- 
+
+## SCENE 03 — THE HUNGER WITHIN
+Duration: 00:16–00:24 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show Garrow stopping beside a broken stone pillar. His stomach contracts with hunger. He looks toward the distant wasteland, then down at his trembling paws. A brief close-up captures his tired eyes and the tension in his jaw. The wind pushes loose snow across his muzzle. He closes his eyes for a moment, fighting the weakness consuming him, before lifting his head again.
+
+**CAMERA:** Medium side shot transitioning into an intimate close-up of his eyes.
+
+**LIGHTING AND ATMOSPHERE:** Muted grey, subtle shadows across his face, drifting frost.
+
+**SOUND DESIGN:** Low stomach rumble, strained breathing, distant wind.
+
+--- 
+
+## SCENE 04 — A FAMILIAR SCENT
+Duration: 00:24–00:32 | 8 seconds
+
+**VISUAL DIRECTION:**
+A sudden gust changes direction. Garrow freezes. His ears lift, and his nose moves through the air. Use a subtle visual suggestion of scent: faint translucent trails drifting through the cold atmosphere, carrying him toward a distant gorge. His expression changes from exhaustion to disbelief. He raises his head sharply, looking toward the ruins below as though something from his past has returned.
+
+**CAMERA:** Close-up on Garrow's nose and eyes, followed by a slow pan toward the distant gorge.
+
+**LIGHTING AND ATMOSPHERE:** Cold blue-grey lighting, moving fog, a slight shift in the wind.
+
+**SOUND DESIGN:** Wind briefly softens, followed by a subtle musical swell.
+
+--- 
+
+## SCENE 05 — THE WHIMPER
+Duration: 00:32–00:40 | 8 seconds
+
+**VISUAL DIRECTION:**
+Far below, between ruined stone arches, a small indistinct silhouette briefly moves behind a broken pillar. Do not clearly reveal its identity or appearance. A faint whimper seems to emerge from the ruins. Garrow's eyes widen. He steps toward the edge of the ridge, searching the shadows. His expression carries both hope and fear. The silhouette disappears before he can approach.
+
+**CAMERA:** Long-lens view through the ruined arches, then cut to Garrow's reaction.
+
+**LIGHTING AND ATMOSPHERE:** Heavy fog, sleet, indistinct silhouettes, mysterious depth.
+
+**SOUND DESIGN:** Faint distant whimper, sleet, a soft heartbeat-like musical pulse.
+
+--- 
+
+## SCENE 06 — THE MEMORY OF THE GORGE
+Duration: 00:40–00:48 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show a brief, fragmented memory rather than a fully explained flashback. Garrow's younger silhouette stands on a mountain gorge amid falling stone and violent storm winds. Several indistinct wolf silhouettes scatter in different directions. One small figure disappears into the dust. Return immediately to the present, where Garrow lowers his head and begins descending the ridge with sudden urgency.
+
+**CAMERA:** Quick atmospheric memory fragments, followed by a tracking shot behind present-day Garrow.
+
+**LIGHTING AND ATMOSPHERE:** Memory in pale storm-white and dark silhouettes; present scene in cold grey.
+
+**SOUND DESIGN:** Distant rockfall echo, rushing wind, then heavy pawsteps.
+
+--- 
+
+## SCENE 07 — THE BRIAR LABYRINTH
+Duration: 00:48–00:56 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow crosses a ravine where enormous iron-coloured roots break through the earth. He follows the scent between broken cloister stones. The trail suddenly ends before a colossal wall of black thorns. The camera rises slowly, revealing the Briar Labyrinth towering above him. Black brambles twist around ruined towers and weathered stone angels. Daggers of thorns protrude from the living walls.
+
+**CAMERA:** Ground-level tracking shot rising into a dramatic vertical reveal.
+
+**LIGHTING AND ATMOSPHERE:** Deep charcoal shadows, cold mist, faint black sap glistening on roots.
+
+**SOUND DESIGN:** Deep wooden groaning, roots grinding against stone, wind whistling through the branches.
+
+--- 
+
+## SCENE 08 — THE GATE WITHOUT A GATE
+Duration: 00:56–01:04 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show a narrow opening beneath two leaning stone pillars. Garrow approaches cautiously. Deep within the labyrinth, enormous roots rotate against one another with mechanical precision. The camera follows a thorn-covered branch as it shifts, revealing an unsettling pattern of movement through the walls. Garrow looks back toward the open ridge. He hesitates at the threshold.
+
+**CAMERA:** Slow forward dolly through the entrance, ending over Garrow's shoulder.
+
+**LIGHTING AND ATMOSPHERE:** Blackened branches, narrow shafts of grey light, oppressive shadows.
+
+**SOUND DESIGN:** Repeating clack, grind, and thrum; deep subterranean rumbling.
+
+--- 
+
+## SCENE 09 — THE CHOICE
+Duration: 01:04–01:12 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow stands between two worlds. Behind him lies the open, frozen ridge. Ahead waits the narrow darkness of the labyrinth. A faint whimper emerges again from within. His paws shift uncertainly. He looks once more toward the empty wilderness, then turns and steps into the thorn-covered entrance.
+
+**CAMERA:** Symmetrical wide composition, followed by a close-up of his paw crossing the threshold.
+
+**LIGHTING AND ATMOSPHERE:** Open grey daylight behind him, deep shadow ahead.
+
+**SOUND DESIGN:** The wind fades as his paws cross the threshold. A deep root movement begins.
+
+--- 
+
+## SCENE 10 — THE ENTRANCE SEALS
+Duration: 01:12–01:20 | 8 seconds
+
+**VISUAL DIRECTION:**
+The instant Garrow's hind paws cross the entrance, the canopy trembles violently. Thick woven boughs descend behind him. Black branches interlock, twisting and tightening until the opening disappears completely. Garrow spins and strikes the sealed barrier with both forepaws. He bites into the wood, but only dark iron-rich sap emerges. The wall remains immovable.
+
+**CAMERA:** Rapid turn with Garrow, followed by a tight shot of claws scraping the thorn wall.
+
+**LIGHTING AND ATMOSPHERE:** Shadows deepen as the last exterior light disappears.
+
+**SOUND DESIGN:** Violent root snapping, grinding wood, claws scraping, sudden low-frequency impact.
+
+--- 
+
+## SCENE 11 — THE MAZE THAT CORRECTED HIM
+Duration: 01:20–01:28 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow walks through a narrow corridor of calcified roots. The passage bends unnaturally. A broken statue appears ahead. He turns into another corridor, only to discover the same statue waiting again. The camera rotates subtly as the walls shift behind him. A staircase descends into darkness, but its far end returns to the same corridor.
+
+**CAMERA:** Slow tracking shot with a subtle rotational distortion.
+
+**LIGHTING AND ATMOSPHERE:** Sickly green-grey light, narrow shadows, drifting black dust.
+
+**SOUND DESIGN:** Stone grinding, distant roots dragging, hollow echoes.
+
+--- 
+
+## SCENE 12 — TIME WITHOUT END
+Duration: 01:28–01:36 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show Garrow moving through the same corridor in several overlapping visual moments. His paws become more damaged, his coat dirtier, and his body weaker. The grey light above never changes. Shadows move strangely across the walls, suggesting time has lost its natural rhythm. Garrow stops and looks around, confused and exhausted.
+
+**CAMERA:** A slow lateral tracking shot with subtle time-lapse transitions.
+
+**LIGHTING AND ATMOSPHERE:** Unchanging grey illumination, unnatural shadows, cold mist.
+
+**SOUND DESIGN:** Repeated distant grinding, uneven breathing, fading musical pulse.
+
+--- 
+
+## SCENE 13 — GHOSTS OF THE OLD PACK
+Duration: 01:36–01:44 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow sees vague wolf-shaped silhouettes emerging through the fog ahead. They resemble memories rather than solid creatures. One appears briefly near a pillar, another at the far end of a corridor. Garrow follows, stumbling forward. As he approaches, each silhouette dissolves into drifting mist. He reaches the empty space where one stood.
+
+**CAMERA:** Slow subjective tracking shot, followed by a close-up of his paw touching empty ground.
+
+**LIGHTING AND ATMOSPHERE:** Fog-heavy, blurred silhouettes, muted blue-grey highlights.
+
+**SOUND DESIGN:** Distant indistinct howls, echoing pawsteps, hollow wind.
+
+--- 
+
+## SCENE 14 — THE HUNGER'S EDGE
+Duration: 01:44–01:52 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow collapses beside a calcified wooden column. His breathing becomes shallow. His stomach tightens, and his eyes search the darkness with a desperate, almost feral intensity. He tries to stand but his forelegs tremble. The walls loom over him. His body is close to giving up.
+
+**CAMERA:** Low close-up at floor level, slowly pushing toward his face.
+
+**LIGHTING AND ATMOSPHERE:** Almost colourless darkness, faint green undertones, oppressive shadows.
+
+**SOUND DESIGN:** Ragged breathing, faint heartbeat, deep environmental rumbling.
+
+--- 
+
+## SCENE 15 — THE LAST MOMENT
+Duration: 01:52–02:00 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow lowers his head onto the cold stone. His eyes slowly close. The camera pulls back, leaving him small beneath enormous twisted roots. For a moment, the labyrinth appears completely still. Then a tiny tremor passes through the floor, as if something distant has moved.
+
+**CAMERA:** Slow overhead pullback, emphasizing his isolation.
+
+**LIGHTING AND ATMOSPHERE:** Dim grey light, almost complete stillness.
+
+**SOUND DESIGN:** Breathing fades, near silence, one distant root creak.
+
+--- 
+
+## SCENE 16 — THE BELL IN THE DARK
+Duration: 02:00–02:08 | 8 seconds
+
+**VISUAL DIRECTION:**
+A single delicate bronze bell note rings through the darkness. Garrow's ears twitch. His eyes open slowly. A subtle shimmer of dust vibrates in the air with the sound. The camera shifts toward a distant corridor where a faint, warmer glow appears between the black roots.
+
+**CAMERA:** Extreme close-up of Garrow's eye, followed by a slow pan toward the distant light.
+
+**LIGHTING AND ATMOSPHERE:** Darkness pierced by a tiny silver-blue highlight.
+
+**SOUND DESIGN:** Clear bronze bell chime with a long, delicate echo.
+
+--- 
+
+## SCENE 17 — THE SCENT OF LIFE
+Duration: 02:08–02:16 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow lifts his head. His nose moves through the air. Faint visual trails of crushed chamomile, mountain clover, and warm wool drift from the distant passage. The camera follows these subtle trails as they weave between thorn-covered walls. Garrow struggles to his feet and begins following them.
+
+**CAMERA:** Close-up transitioning into a low tracking shot behind Garrow.
+
+**LIGHTING AND ATMOSPHERE:** A faint soft glow enters the otherwise dark corridor.
+
+**SOUND DESIGN:** Gentle bell resonance, faint rustling leaves, Garrow's laboured footsteps.
+
+--- 
+
+# CHAPTER TWO — THE FLEECE IN THE CLOISTER
+
+## SCENE 18 — THROUGH THE THORNS
+Duration: 02:16–02:24 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow forces himself through a narrow passage. Thorn branches scrape both sides of his body, tearing his already damaged coat and opening fresh cuts along his flanks. He pushes forward despite the pain. At the end of the corridor, the branches slowly part, revealing a pale opening beyond.
+
+**CAMERA:** Tight side-tracking shot through the narrow passage, ending in a bright reveal.
+
+**LIGHTING AND ATMOSPHERE:** Dark thorn tunnel opening into soft moonlight.
+
+**SOUND DESIGN:** Branches scraping fur, strained breathing, distant water.
+
+--- 
+
+## SCENE 19 — THE BRAMBLE CLOISTER
+Duration: 02:24–02:32 | 8 seconds
+
+**VISUAL DIRECTION:**
+Reveal the Bramble Cloister: a sunken courtyard beneath a broken stone vault. Moonlight enters through a crack in the roof, creating pale bars across ancient flagstones. White lilies grow from the mortar. A shallow basin filled with clear water rests at the centre. Above the far arch hangs a cracked bronze bell. Garrow enters and stumbles, overwhelmed by the sudden stillness.
+
+**CAMERA:** Slow cinematic wide reveal, moving down toward the courtyard floor.
+
+**LIGHTING AND ATMOSPHERE:** Soft moonlight, silver-blue highlights, delicate mist.
+
+**SOUND DESIGN:** Quiet water, faint wind through the roof, soft ambient music.
+
+--- 
+
+## SCENE 20 — THREE SMALL FIGURES
+Duration: 02:32–02:40 | 8 seconds
+
+**VISUAL DIRECTION:**
+Three small white lambs stand beside the basin. The smallest has a dark muzzle and leans curiously forward. The eldest watches Garrow with thoughtful, steady eyes. The quietest remains half a step behind, gentle and still. Their clean white fleece contrasts sharply against the soot-dark courtyard. Garrow looks at them through exhaustion.
+
+**CAMERA:** Medium-wide shot of the lambs, followed by a slow close-up of Garrow's eyes.
+
+**LIGHTING AND ATMOSPHERE:** Moonlight catches the lambs' fleece, creating a soft natural glow.
+
+**SOUND DESIGN:** Soft hoof movements, quiet water, faint fleece rustling.
+
+--- 
+
+## SCENE 21 — HUNGER RETURNS
+Duration: 02:40–02:48 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow's gaze shifts toward the lambs. His pupils tighten. His legs tremble, and his mouth fills with saliva. Show a brief close-up of his hungry expression, followed by the lambs' small, vulnerable forms. He lowers his head and tenses his shoulders. The instinct to attack begins overcoming his remaining restraint.
+
+**CAMERA:** Alternating close-ups between Garrow's face and the lambs.
+
+**LIGHTING AND ATMOSPHERE:** Shadows deepen around Garrow while the lambs remain softly illuminated.
+
+**SOUND DESIGN:** Low rumble, shallow breathing, tension-building strings.
+
+--- 
+
+## SCENE 22 — THE CHARGE
+Duration: 02:48–02:56 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow suddenly lunges toward the three lambs. The smallest lamb, Bram, steps forward instead of running. He tilts his head toward the wolf's black nose, sniffs it, and gives a small sneeze. Then he presses his warm shoulder against Garrow's torn paw. Garrow's jaws snap shut inches above the lamb.
+
+**CAMERA:** Rapid forward tracking shot, ending in an intense close-up of the near miss.
+
+**LIGHTING AND ATMOSPHERE:** Sudden movement against the still moonlit courtyard.
+
+**SOUND DESIGN:** Sudden paw impact, sharp breath, a tiny sneeze, abrupt musical silence.
+
+--- 
+
+## SCENE 23 — KINDNESS INSTEAD OF FEAR
+Duration: 02:56–03:04 | 8 seconds
+
+**VISUAL DIRECTION:**
+Hold on the moment after Garrow's jaws stop. Bram remains close, visibly trembling but refusing to retreat. The eldest lamb, Pip, carefully nudges a small wicker bowl across the stone floor. Inside are dried berries, sweet roots, and a little mound of clover. Pip pushes the bowl toward Garrow, then steps back.
+
+**CAMERA:** Close-up of the bowl sliding across the flagstones, then Garrow's stunned expression.
+
+**LIGHTING AND ATMOSPHERE:** Warm highlights on the food against the cool stone.
+
+**SOUND DESIGN:** Wicker scraping softly across stone, gentle breathing, restrained music.
+
+--- 
+
+## SCENE 24 — THE HUM THAT CALMED THE WOLF
+Duration: 03:04–03:12 | 8 seconds
+
+**VISUAL DIRECTION:**
+Oona, the quiet lamb, lowers her head and begins humming. Show gentle ripples moving across the basin water. The note travels through the courtyard as faint silver-blue vibrations in the air. Garrow's tense muscles slowly loosen. His gaze shifts from the lambs to the bowl. His breathing begins to settle.
+
+**CAMERA:** Close-up of Oona, then a smooth pan across the rippling water toward Garrow.
+
+**LIGHTING AND ATMOSPHERE:** Subtle silver-blue highlights, peaceful moonlight.
+
+**SOUND DESIGN:** Delicate nonverbal humming, soft water resonance, fading tension.
+
+--- 
+
+## SCENE 25 — THE FIRST MEAL
+Duration: 03:12–03:20 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow slowly lowers his muzzle toward the bowl. He drinks from the clear basin, then eats the dried berries, roots, and clover. His body trembles with weakness. The lambs wait nearby without approaching too quickly. Show his expression gradually changing from desperation to quiet disbelief.
+
+**CAMERA:** Intimate close-ups of the bowl, water, and Garrow's face.
+
+**LIGHTING AND ATMOSPHERE:** Soft moonlight reflecting across the basin.
+
+**SOUND DESIGN:** Gentle water, quiet eating, soft ambient melody.
+
+--- 
+
+## SCENE 26 — WARMTH AGAINST THE COLD
+Duration: 03:20–03:28 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow's legs finally give way. He collapses beside the basin. The lambs approach carefully and curl against his body. Bram tucks himself beneath Garrow's chin. Oona settles near his forepaws. Pip rests against the wolf's belly, where his breathing is shallowest. Their white fleece contrasts with Garrow's dark, frost-covered coat.
+
+**CAMERA:** Slow circular movement around the group, ending in a close-up of their peaceful arrangement.
+
+**LIGHTING AND ATMOSPHERE:** Soft moonlight, delicate warmth, gentle shadows.
+
+**SOUND DESIGN:** Soft fleece movement, steady breathing, delicate music.
+
+--- 
+
+## SCENE 27 — A SLEEP WITHOUT THE GORGE
+Duration: 03:28–03:36 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow lies peacefully beside the basin, surrounded by the sleeping lambs. His eyes slowly close. A faint reflection of the Northern Gorge appears in the water, then disappears as the surface becomes still. The camera rises above the group, showing the sanctuary protecting them beneath its broken vault.
+
+**CAMERA:** Slow overhead pullback.
+
+**LIGHTING AND ATMOSPHERE:** Gentle moonlight, calm shadows, still water.
+
+**SOUND DESIGN:** Gentle breathing, faint nighttime ambience, soft musical resolution.
+
+--- 
+
+# CHAPTER THREE — AN UNLIKELY PACK
+
+## SCENE 28 — DAYS THAT GATHERED
+Duration: 03:36–03:44 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show the Bramble Cloister through a poetic sequence of changing moments. Outside its walls, thorn branches shift and black sap seeps from the roots. Inside, Garrow rests near the basin while the lambs move through their daily routines. Moonlight shifts across the courtyard, suggesting time passing without revealing exact days or seasons.
+
+**CAMERA:** Gentle montage of the sanctuary and surrounding labyrinth.
+
+**LIGHTING AND ATMOSPHERE:** Quiet moonlit blues with subtle changes in shadow.
+
+**SOUND DESIGN:** Distant root movement, water, soft natural ambience.
+
+--- 
+
+## SCENE 29 — PIP, THE STEADY ONE
+Duration: 03:44–03:52 | 8 seconds
+
+**VISUAL DIRECTION:**
+Pip leads Garrow toward a hidden cistern. He pauses beside a stone passage and waits until the recovering wolf follows. Show Pip pointing his nose toward clean water, then toward pale mushrooms growing between the stones. When Garrow tries to move too quickly, Pip stops patiently until the wolf slows down.
+
+**CAMERA:** Side-tracking shot following the pair through the courtyard.
+
+**LIGHTING AND ATMOSPHERE:** Soft natural light filtering through the broken roof.
+
+**SOUND DESIGN:** Small hoofsteps, water dripping, soft stone echoes.
+
+--- 
+
+## SCENE 30 — BRAM, THE FEARLESS MISCHIEF
+Duration: 03:52–04:00 | 8 seconds
+
+**VISUAL DIRECTION:**
+Bram leaps over Garrow's resting tail as though crossing a fallen tree. He disappears playfully into the wolf's thick ruff, then climbs onto Garrow's back. Garrow turns his head with a pretend-annoyed expression. Bram stands proudly atop him. Garrow's tail betrays his amusement, thumping against the flagstones.
+
+**CAMERA:** Playful low-angle shot followed by a close-up of Garrow's moving tail.
+
+**LIGHTING AND ATMOSPHERE:** Gentle moonlight with warmer highlights.
+
+**SOUND DESIGN:** Quick hoofsteps, soft fleece rustling, tail thumping against stone.
+
+--- 
+
+## SCENE 31 — OONA, THE QUIET MELODY
+Duration: 04:00–04:08 | 8 seconds
+
+**VISUAL DIRECTION:**
+Oona gathers small white flowers and blue bellflowers from cracks in the courtyard stones. She carefully places them behind Garrow's torn left ear. As she works, she hums gently. Garrow catches his reflection in the clear basin: a scarred ash-grey wolf wearing a delicate crown of flowers. He looks away, but a subtle smile appears.
+
+**CAMERA:** Close-up of Oona placing flowers, followed by the reflection in the basin.
+
+**LIGHTING AND ATMOSPHERE:** Soft silver-blue illumination, delicate flower details.
+
+**SOUND DESIGN:** Gentle humming, flower stems brushing fur, quiet water.
+
+--- 
+
+## SCENE 32 — A LANGUAGE WITHOUT WORDS
+Duration: 04:08–04:16 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show a sequence of small gestures between the characters. Garrow lowers his head to let Bram approach. Pip gives a gentle warning tap with his hoof. Oona rests beside Garrow's forepaws. Garrow holds one paw still as the lambs pass nearby. Their eyes meet, and their movements become naturally coordinated.
+
+**CAMERA:** A series of intimate medium shots connected by smooth dissolves.
+
+**LIGHTING AND ATMOSPHERE:** Peaceful courtyard lighting, soft natural shadows.
+
+**SOUND DESIGN:** Soft hoofsteps, breathing, quiet humming.
+
+--- 
+
+## SCENE 33 — THE WOLF BEGINS TO HEAL
+Duration: 04:16–04:24 | 8 seconds
+
+**VISUAL DIRECTION:**
+Show Garrow walking more comfortably through the courtyard. His paw pads are healing, his coat looks healthier, and the fever has left his eyes. He rests without constantly watching the entrance. When a branch moves outside, he briefly looks up but does not immediately rise in alarm. The lambs continue their routines around him.
+
+**CAMERA:** Slow tracking shot following Garrow's steady walk.
+
+**LIGHTING AND ATMOSPHERE:** Slightly warmer light, peaceful sanctuary ambience.
+
+**SOUND DESIGN:** Calm footsteps, soft breeze, gentle music.
+
+--- 
+
+## SCENE 34 — THE PACK HE HAD LOST
+Duration: 04:24–04:32 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow sits beside the basin, looking into the water. The reflection briefly suggests distant memories of his old pack crossing frozen steppes and ruined kingdoms. These are indistinct silhouettes, not new identifiable characters. Return to Garrow as he lowers his head. His grief remains visible, but it no longer overwhelms him.
+
+**CAMERA:** Close-up of the basin reflection, then a slow push toward Garrow.
+
+**LIGHTING AND ATMOSPHERE:** Cool reflections with soft silver highlights.
+
+**SOUND DESIGN:** Distant wind, faint remembered howls, soft strings.
+
+--- 
+
+## SCENE 35 — THE MEANING OF FAMILY
+Duration: 04:32–04:40 | 8 seconds
+
+**VISUAL DIRECTION:**
+Bram falls asleep with his head resting on Garrow's foreleg. Oona hums beside the basin. Pip watches moonlight move across the lilies. Garrow looks down at Bram, then toward the other two lambs. His expression changes as he understands the bond they have formed. He remains still so Bram can sleep.
+
+**CAMERA:** Slow close-ups of each lamb, ending on Garrow's peaceful expression.
+
+**LIGHTING AND ATMOSPHERE:** Warm moonlight, quiet and intimate composition.
+
+**SOUND DESIGN:** Soft humming, slow breathing, delicate musical warmth.
+
+--- 
+
+## SCENE 36 — THE BELL TREMBLES
+Duration: 04:40–04:48 | 8 seconds
+
+**VISUAL DIRECTION:**
+The cracked bronze bell above the far arch begins to tremble. Its clapper does not visibly strike the rim. A subtle vibration travels through the bell's metal surface. The water in the basin develops small ripples. Garrow lifts his head sharply. Pip stops moving. Oona's humming fades. Bram wakes and presses closer to Garrow.
+
+**CAMERA:** Close-up of the vibrating bell, followed by a wide shot of the group's reaction.
+
+**LIGHTING AND ATMOSPHERE:** Moonlight becomes colder; shadows deepen.
+
+**SOUND DESIGN:** Low metallic vibration, rippling water, music shifting toward suspense.
+
+--- 
+
+## SCENE 37 — THE SCENT OF FIRE
+Duration: 04:48–04:56 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow rises slowly. His fur lifts along his spine. He turns toward the southern arch. Deep claw grooves have appeared across the granite, far wider than any wolf's claws. The surrounding stone is blackened as though scorched from within. Pip moves the other lambs behind Garrow. A faint dark shape shifts beyond the arch.
+
+**CAMERA:** Slow pan from the claw marks to Garrow's defensive stance.
+
+**LIGHTING AND ATMOSPHERE:** Cold moonlight with subtle burnt-orange reflections from the distant darkness.
+
+**SOUND DESIGN:** Deep chain drag, faint crackling, tense low strings.
+
+--- 
+
+## SCENE 38 — THE GUARDIAN STANDS
+Duration: 04:56–05:04 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow moves directly between the southern arch and the three lambs. His body is still scarred and not fully recovered, but his stance is firm. Pip, Bram, and Oona gather behind him. The camera slowly pushes toward Garrow's face as he watches the darkness. Beyond the arch, an unseen chain drags across stone.
+
+**CAMERA:** Low-angle hero composition, slow push-in.
+
+**LIGHTING AND ATMOSPHERE:** Moonlight outlines Garrow's silhouette; deep shadows conceal the approaching threat.
+
+**SOUND DESIGN:** Heavy chain scrape, controlled breathing, rising orchestral tension.
+
+--- 
+
+# CHAPTER FOUR — THE STALKER IN THE ASH
+
+## SCENE 39 — THE COPPER MOON
+Duration: 05:04–05:12 | 8 seconds
+
+**VISUAL DIRECTION:**
+The scene opens on the night sky above Hollowthorn. A copper-coloured moon appears between tangled thorn branches. Its strange light stains the broken courtyard walls with an old-blood glow. The surrounding forest becomes unnaturally still. No insects move. No water drips. Even the labyrinth's grinding stops.
+
+**CAMERA:** Slow upward tilt toward the copper moon, then downward toward the silent courtyard.
+
+**LIGHTING AND ATMOSPHERE:** Copper-red moonlight, deep shadows, unnatural stillness.
+
+**SOUND DESIGN:** Wind cuts out, music falls into near silence.
+
+--- 
+
+## SCENE 40 — THE BELL OF DOOM
+Duration: 05:12–05:20 | 8 seconds
+
+**VISUAL DIRECTION:**
+The bronze bell suddenly strikes. Dust falls from the broken vault. The basin water ripples violently. The lambs huddle beneath the stone dais. Garrow plants his paws in front of them, lowering his shoulders and preparing to defend the courtyard. The bell's movement becomes increasingly violent.
+
+**CAMERA:** Rapid close-up of the bell, followed by a wide shot of the courtyard.
+
+**LIGHTING AND ATMOSPHERE:** Copper moonlight, moving dust, trembling shadows.
+
+**SOUND DESIGN:** Three powerful bell strikes, falling dust, deep stone resonance.
+
+--- 
+
+## SCENE 41 — THE ARCH EXPLODES
+Duration: 05:20–05:28 | 8 seconds
+
+**VISUAL DIRECTION:**
+The southern arch bursts inward. Limestone fragments explode across the courtyard. Rusted chains snap loose and whip through the air. Thick black smoke rolls over the flagstones. Garrow braces himself as the shockwave passes. The camera holds on the shattered arch as a massive silhouette emerges from the smoke.
+
+**CAMERA:** Wide frontal shot, sudden impact, slow reveal through smoke.
+
+**LIGHTING AND ATMOSPHERE:** Copper light, black smoke, sparks, shattered stone.
+
+**SOUND DESIGN:** Explosive stone impact, whipping chains, roaring smoke, heavy bass impact.
+
+--- 
+
+## SCENE 42 — AETHELGARD, THE CINDER TIGER
+Duration: 05:28–05:36 | 8 seconds
+
+**VISUAL DIRECTION:**
+Reveal Aethelgard stepping through the shattered arch. He is enormous, broad-shouldered, and covered in furnace-coloured fur. His black stripes glow faintly like smouldering coals. Rusted snare cables loop around his throat and shoulders. His yellow eyes burn with feverish intensity. Smoke curls around his paws as he enters the courtyard. His gaze locks onto the three lambs.
+
+**CAMERA:** Slow low-angle reveal, moving from his massive paws to his burning eyes.
+
+**LIGHTING AND ATMOSPHERE:** Copper-orange glow, black smoke, harsh shadows.
+
+**SOUND DESIGN:** Deep tiger growl, burning crackles, heavy pawsteps.
+
+--- 
+
+## SCENE 43 — THE WOLF ATTACKS
+Duration: 05:36–05:44 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow launches himself toward the tiger. He strikes Aethelgard's shoulder, driving his claws through the ash-covered hide. Dark blood spatters across the stone and hisses where it lands. For a brief moment, the enormous tiger shifts under the impact. Garrow remains close, attempting to hold his ground.
+
+**CAMERA:** Fast lateral tracking shot, followed by a close-up of the impact.
+
+**LIGHTING AND ATMOSPHERE:** Copper light, sparks, flying ash, sharp silhouettes.
+
+**SOUND DESIGN:** Heavy impact, claws tearing, tiger growl, sharp musical percussion.
+
+--- 
+
+## SCENE 44 — THE FALL
+Duration: 05:44–05:52 | 8 seconds
+
+**VISUAL DIRECTION:**
+Aethelgard swings one enormous paw sideways. It catches Garrow across the ribs and sends him crashing through the balustrade. He lands hard inside the empty basin. Stone fragments scatter. Garrow tries to rise, but his forelegs fold beneath him. The camera holds on his pained expression as the tiger turns toward the lambs.
+
+**CAMERA:** Side-on action shot followed by a low close-up inside the basin.
+
+**LIGHTING AND ATMOSPHERE:** Smoke-filled courtyard, copper highlights, falling dust.
+
+**SOUND DESIGN:** Heavy collision, cracking stone, strained breathing, deep tiger growl.
+
+--- 
+
+## SCENE 45 — BRAM'S COURAGE
+Duration: 05:52–06:00 | 8 seconds
+
+**VISUAL DIRECTION:**
+Aethelgard advances toward the lambs. Pip and Oona press against the wall. Bram steps in front of them. His small legs tremble, and his hooves click against the stone, but he refuses to move aside. He glances back toward Pip and Oona, then turns to face the approaching tiger.
+
+**CAMERA:** Low-angle shot emphasizing Bram's tiny silhouette against the enormous tiger.
+
+**LIGHTING AND ATMOSPHERE:** Copper light on Bram's white fleece, dark looming shadows behind Aethelgard.
+
+**SOUND DESIGN:** Tiny hoof clicks, heavy tiger footsteps, music rising.
+
+--- 
+
+## SCENE 46 — THE ABDUCTION
+Duration: 06:00–06:08 | 8 seconds
+
+**VISUAL DIRECTION:**
+Aethelgard lunges forward. His jaws close around Bram's fleece and lift him from the floor. Bram kicks once, striking the tiger's muzzle. Aethelgard snarls and bounds backward through the shattered arch, dragging Bram into the smoke. A hoof scrapes across the courtyard, leaving a streak of red against the white lilies.
+
+**CAMERA:** Rapid action shot following the tiger's movement, ending on the red-marked lilies.
+
+**LIGHTING AND ATMOSPHERE:** Smoke, copper moonlight, flying debris.
+
+**SOUND DESIGN:** Tiger snarl, scraping hoof, rushing movement, abrupt musical sting.
+
+--- 
+
+## SCENE 47 — THE BROKEN WOLF CHOOSES
+Duration: 06:08–06:16 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow forces himself out of the basin. His ribs are visibly painful, and his movements are unstable. He staggers toward the shattered arch, but thorn walls slam down beyond it, swallowing the tiger's trail. Garrow briefly turns toward Pip and Oona, touching his muzzle to each of them. He then looks toward the fading smoke and begins following it.
+
+**CAMERA:** Tracking shot from the basin toward the arch, ending behind Garrow as he disappears.
+
+**LIGHTING AND ATMOSPHERE:** Smoke-filled darkness, fading copper light, deep shadows.
+
+**SOUND DESIGN:** Laboured breathing, roots slamming shut, fading chain sounds.
+
+--- 
+
+# CHAPTER FIVE — THE SILVER TWIG AND THE BROKEN ALPHA
+
+## SCENE 48 — FOLLOWING THE ASH
+Duration: 06:16–06:24 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow moves through the shifting labyrinth, following signs of Aethelgard's passage. Broken branches lie across the stones. Black sap steams from damaged roots. The smell of scorched fur is suggested through smoke trails and ash. Corridors close before him, and stairways fold into themselves. Each time the maze changes, Garrow finds the trail again.
+
+**CAMERA:** Forward tracking shot through shifting passages, maintaining Garrow's direction of travel.
+
+**LIGHTING AND ATMOSPHERE:** Black, charcoal, and burnt-orange highlights.
+
+**SOUND DESIGN:** Heavy breathing, snapping branches, distant tiger movement.
+
+--- 
+
+## SCENE 49 — THE BONE BARROW
+Duration: 06:24–06:32 | 8 seconds
+
+**VISUAL DIRECTION:**
+The passage opens into a vast underground chamber: the Bone Barrow. Its walls are formed from enormous ancient ribs. Rusted cages hang between the bones. At the centre stands a moss-covered altar. Bram lies upon it, pinned beneath one of Aethelgard's massive forepaws. His fleece is singed, a dark wound marks his flank, but his eyes are open. He is alive.
+
+**CAMERA:** Grand wide reveal of the chamber, slowly descending toward Bram and the tiger.
+
+**LIGHTING AND ATMOSPHERE:** Dim amber light, black smoke, pale bone surfaces, hanging dust.
+
+**SOUND DESIGN:** Deep chamber echo, faint breathing, molten saliva hissing against stone.
+
+--- 
+
+## SCENE 50 — THE SNARE
+Duration: 06:32–06:40 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow launches himself from the upper rim of the Bone Barrow toward Aethelgard. Midway through the leap, his tail strikes a concealed snare line. The old cable snaps taut around the tiger's hindquarters and yanks him sideways. Aethelgard crashes against the altar. Bram rolls free and crawls behind it, unable to stand properly.
+
+**CAMERA:** Dynamic downward tracking shot, then a close-up of the cable snapping tight.
+
+**LIGHTING AND ATMOSPHERE:** Sparks, dust, bone fragments, amber smoke.
+
+**SOUND DESIGN:** Cable snap, heavy crash, rattling metal, scraping hooves.
+
+--- 
+
+## SCENE 51 — THE LAST BATTLE
+Duration: 06:40–06:48 | 8 seconds
+
+**VISUAL DIRECTION:**
+Garrow attacks Aethelgard's shoulder, carving bright grooves into the charred hide. The tiger roars and backhands him into the rib wall. Ancient bone cracks beneath the moss. Before Garrow can rise, Aethelgard pins him to the floor with one enormous forepaw. The tiger lowers his burning jaws toward Garrow's throat. Bram remains hidden behind the altar.
+
+**CAMERA:** Fast close-range combat tracking, ending in a dramatic low-angle shot of Garrow pinned beneath the tiger.
+
+**LIGHTING AND ATMOSPHERE:** Furnace-orange light, black smoke, fractured bone, deep shadows.
+
+**SOUND DESIGN:** Roaring tiger, cracking bone, heavy impact, music reaching its darkest point.
+
+--- 
+
+## SCENE 52 — THREE VOICES, ONE MAGIC
+Duration: 06:48–06:56 | 8 seconds
+
+**VISUAL DIRECTION:**
+At the entrance of the Bone Barrow, Oona begins humming. Pip stands beside her, his head raised. Bram, trembling behind the altar, joins with a thin, wavering nonverbal bleat. Three voices find the same pitch. The sound travels through the ancient bones. Silver light begins stirring in the cracks between the stones. Garrow and Aethelgard remain in the foreground.
+
+**CAMERA:** Close-ups of the three lambs, followed by a sweeping shot across the glowing cracks.
+
+**LIGHTING AND ATMOSPHERE:** Silver-blue light emerging from deep darkness.
+
+**SOUND DESIGN:** Layered nonverbal humming and bleating, subtle magical resonance, stone vibrations.
+
+--- 
+
+## SCENE 53 — THE WEAVER-FLEECE
+Duration: 06:56–07:04 | 8 seconds
+
+**VISUAL DIRECTION:**
+A silver thread slips from Bram's wounded flank, not like blood but like a strand of moonlight. More threads follow, weaving an intricate luminous pattern above the altar. The threads lash around Aethelgard's limbs, weakening the furnace glow. One reaches Garrow and passes through his chest like cold water. His broken ribs draw together. Fine silver filaments spread across his grey coat, forming a delicate mantle over his shoulders and back. Garrow rises.
+
+**CAMERA:** Slow magical reveal, following the threads before moving into a close-up of Garrow rising.
+
+**LIGHTING AND ATMOSPHERE:** Brilliant but restrained silver light, glowing bone cracks, fading furnace orange.
+
+**SOUND DESIGN:** Delicate magical chimes, threads weaving, tiger's weakened growl, rising orchestral swell.
+
+--- 
+
+## SCENE 54 — THE BROKEN ALPHA AND THE FIRST DAWN
+Duration: 07:04–07:12 | 8 seconds
+
+**VISUAL DIRECTION:**
+Create a carefully paced final sequence within the eight-second limit.
+
+Begin with Garrow pinning Aethelgard against the altar. His jaws are near the tiger's throat, but he does not bite. Silver light reveals the tiger's true face: a familiar muzzle, a scar above the brow, and a notched left ear. The glowing stripes fade, revealing the exhausted eyes of Aethel, the old Alpha of Garrow's ancestral pack.
+
+Garrow turns his attention to the rune talisman embedded in Aethel's chest. Its markings match the rusted charm hanging from Garrow's collar. The silver mantle brightens. Garrow presses his teeth against the talisman. It cracks, and a wave of silver light unbinds the curse. The snare cables fall away. Aethel's body dissolves into silver-lit ash, rising through the ribs of the Bone Barrow.
+
+In the same continuous visual passage, the great roots fall silent. Thorn walls open. Black branches reveal pale wood, white lilies emerge, and water runs clear. Bram limps from behind the altar. Garrow lowers his head so Bram can press his forehead against the wolf's muzzle. Pip stands on one side and Oona on the other. Oona places a small white flower behind Garrow's torn left ear. The silver mantle rests gently over his shoulders as the first golden dawn enters the newly opened forest.
+
+**CAMERA:** Intimate close-up of the revealed Alpha, transition to the talisman breaking, then a wide rising shot of the restored forest and reunited family.
+
+**LIGHTING AND ATMOSPHERE:** Silver magic transitions into warm golden dawn, pale wood, fresh green, white lilies, and clear water.
+
+**SOUND DESIGN:** Talisman cracking, chains breaking, silver ash rising, roots becoming still, gentle water, warm orchestral resolution.
+
+---
+
+# END CARD — TITLE REVEAL
+
+Place after the final scene without adding another story scene or changing the 7-minute-12-second runtime.
+
+Fade into a dark, hand-drawn background of pale wood and white lilies.
+
+Reveal the title:
+
+HOLLOWTHORN
+THE GUARDIAN OF THE FLEECE
+
+A delicate silver thread slowly traces the title before fading into the image of a small white flower.
+
+Allow the final music to resolve naturally.
+
+---
+
+# FINAL PRODUCTION REQUIREMENTS
+
+## Narrative continuity
+The film must preserve these story facts:
+1. Garrow is searching for his scattered old pack when he hears a familiar whimper.
+2. The early sighting remains uncertain. Do not reveal that the figure is definitely the lamb Pip or the lost packmate Pip.
+3. The Briar Labyrinth traps Garrow and distorts his sense of time.
+4. The bell and the scent of chamomile, clover, and warm wool lead him to the Bramble Cloister.
+5. Garrow nearly attacks the lambs because of hunger, but their kindness changes his course.
+6. Pip is the steady eldest lamb, Bram is the playful and brave smallest lamb, and Oona is the quiet lamb who hums and collects flowers.
+7. Garrow gradually heals and learns to trust his new family.
+8. Aethelgard attacks the sanctuary and takes Bram. Bram survives and is rescued later.
+9. Garrow follows the Cinder Tiger through the labyrinth to the Bone Barrow.
+10. The snare cable catches Aethelgard during Garrow's leap.
+11. The three lambs reveal their connection to the Weaver-Fleece through their shared song.
+12. Silver threads heal Garrow and form a mantle that represents responsibility and connection, not invincibility.
+13. Aethelgard is revealed to be Aethel, the former Alpha of Garrow's ancestral pack.
+14. The Cannibal Curse is broken by destroying the rune talisman with the Weaver-Fleece's silver magic.
+15. Aethel is released from the curse and dissolves into silver-lit ash.
+16. The labyrinth heals, the thorn walls open, and the forest receives its first true dawn.
+17. Garrow becomes the guardian of his new family without forgetting the family he lost.
+
+## Strict visual consistency
+- Garrow must always have an ash-grey coat and a torn left ear.
+- Bram must always have a dark muzzle.
+- Pip must remain the eldest and most observant lamb.
+- Oona must remain quiet and gentle.
+- Aethelgard's burning black stripes and rusted cables must remain consistent until the curse is broken.
+- Bram's wound and singed fleece must remain visible after his capture until the rescue.
+- Garrow's injuries must remain visible until the silver threads heal him.
+- The Silver-Weave Mantle must remain delicate and organic.
+- The same Bramble Cloister, bronze bell, basin, lilies, and southern arch must appear consistently whenever revisited.
+- The Bone Barrow must have enormous rib-like walls, rusted cages, and a moss-covered altar.
+
+## Strict audio rules
+- No narration or voiceover of any kind.
+- No character dialogue.
+- No character speaking.
+- No visible lip movements.
+- No subtitles, captions, or on-screen text representing speech (the title card is the only on-screen text).
+- Use only music, ambient sound, sound effects, and nonverbal creature sounds (breathing, growls, whimpers, humming, bleats).
+- Allow music and environmental sound to carry the emotional rhythm of each scene, with silence used deliberately for tension.
+
+## Strict timing rules
+- Exactly 54 scenes.
+- Exactly 8 seconds per scene.
+- No scene may be shortened or extended.
+- No extra story scenes.
+- Total story runtime: 07:12.
+- Maintain the order of all scenes.
+- Use smooth transitions without removing or merging story events.
+
+## FINAL CREATIVE DIRECTION
+This is not simply a story about a wolf rescuing a lamb.
+It is a story about a creature who spent his life searching for the family he lost, only to discover that family could still find him in the most unexpected place.
+
+The opening must make the audience feel his loneliness. The cloister must make them feel the warmth he has forgotten. Bram's capture must make them fear losing that warmth. The Bone Barrow must make them believe Garrow is about to lose everything again. The revelation of Aethel must turn the final battle into something deeper than a fight. And the ending must leave the audience with the feeling that grief does not disappear, but love can give it somewhere gentler to rest.
+
+Every frame should serve the story. Every sound and every piece of music should carry emotion. Every eight seconds should feel intentional.

@@ -1,0 +1,48 @@
+FROM node:20-alpine AS webbuilder
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend ./
+ENV NEXT_OUTPUT_STANDALONE=true NEXT_ALL_IN_ONE=true NEXT_PUBLIC_API_URL=/
+RUN npm run build
+
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    PYTHONIOENCODING=utf-8
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg curl bash ca-certificates gnupg \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend ./backend
+COPY agent ./agent
+COPY workers ./workers
+COPY migrations ./migrations
+COPY alembic.ini ./
+
+COPY --from=webbuilder /app/.next/standalone /app/frontend-standalone
+COPY --from=webbuilder /app/.next/static /app/frontend-standalone/.next/static
+COPY --from=webbuilder /app/public /app/frontend-standalone/public
+
+COPY start-all.sh /app/start-all.sh
+RUN chmod +x /app/start-all.sh \
+    && useradd --create-home --shell /bin/bash studio \
+    && mkdir -p /app/data \
+    && chown -R studio:studio /app
+USER studio
+
+EXPOSE 10000
+CMD ["/app/start-all.sh"]

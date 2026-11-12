@@ -1,0 +1,49 @@
+# Secrets and local state
+.env
+.env.*
+!.env.example
+!.env*.example
+claude-omnirouter-install-guide.md
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Runtime data
+data/
+local_work/
+outputs/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite3
+
+# Generated plans / browser profiles
+.taaft_chrome_profile/
+taaft_chrome_profile/
+storage_state*.json
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env*.local
+frontend/next-env.d.ts
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/
+
+# Test/scratch workspaces and deploy bundles
+tmp*/
+*.zip
