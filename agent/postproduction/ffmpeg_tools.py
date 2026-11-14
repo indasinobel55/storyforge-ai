@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -150,10 +151,273 @@ def concat_normalized(paths: list[Path], destination: Path) -> Path:
             "-b:a",
             "160k",
             "-movflags",
-            "+faststart",
-            str(destination),
-        ]
-        run_ffmpeg(command)
+        "+faststart",
+        str(destination),
+    ]
+    run_ffmpeg(command)
+    return destination
+
+
+def normalize_silent_exact(
+    source: Path,
+    destination: Path,
+    *,
+    width: int,
+    height: int,
+    fps: float = 24.0,
+    duration: float = 8.0,
+) -> Path:
+    """Strip audio, normalize geometry and cut to an exact duration."""
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    scale = (
+        f"scale={width}:{height}:force_original_aspect_ratio=decrease,"
+        f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps}"
+    )
+    command = [
+        find_ffmpeg(),
+        "-y",
+        "-i",
+        str(source),
+        "-vf",
+        scale,
+        "-an",
+        "-t",
+        f"{duration:.3f}",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "20",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        str(destination),
+    ]
+    run_ffmpeg(command)
+    probe = probe_video(destination)
+    actual = float(probe.get("duration") or 0.0)
+    if abs(actual - duration) > 0.2:
+        raise ProcessingError(f"Exact trim failed: expected {duration:.3f}s, got {actual:.3f}s")
+    return destination
+
+
+def mix_timeline(
+    destination: Path,
+    cues: list[dict],
+    *,
+    narration_track: Path | None = None,
+    sample_rate: int = 48000,
+    mono: bool = True,
+    hiss_gain: float = 0.015,
+) -> Path:
+    """Mix timeline-positioned audio cues (offset_s, gain, path) plus optional
+    narration and a VHS tape-hiss bed into one output WAV."""
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    command = [find_ffmpeg(), "-y"]
+    filter_parts = []
+    labels = []
+
+    def _add(index: int, label: str, gain: float, offset: float) -> None:
+        delay_ms = int(max(0.0, offset) * 1000)
+        filter_parts.append(
+            f"[{index}:a]aresample={sample_rate},volume={gain:.3f},"
+            f"adelay={delay_ms}:all=1[{label}]"
+        )
+        labels.append(f"[{label}]")
+
+    input_index = 0
+    if narration_track is not None and narration_track.exists():
+        command += ["-i", str(narration_track)]
+        _add(input_index, "narr", 1.0, 0.0)
+        input_index += 1
+    for cue_index, cue in enumerate(cues):
+        path = Path(cue["path"])
+        if not path.exists():
+            continue
+        command += ["-i", str(path)]
+        _add(input_index, f"c{cue_index}", float(cue.get("gain", 1.0)), float(cue.get("offset", 0.0)))
+        input_index += 1
+    if hiss_gain > 0:
+        command += ["-f", "lavfi", "-i", f"anoisesrc=color=pink:sample_rate={sample_rate}:duration=3600"]
+        filter_parts.append(f"[{input_index}:a]volume={hiss_gain}[hiss]")
+        labels.append("[hiss]")
+        input_index += 1
+    if not labels:
+        raise ProcessingError("mix_timeline received no audio sources")
+    filter_parts.append(
+        f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest[aout]"
+    )
+    if mono:
+        filter_parts.append("[aout]aformat=channel_layouts=mono[aout]")
+    command += [
+        "-filter_complex",
+        ";".join(filter_parts),
+        "-map",
+        "[aout]",
+        "-t",
+        "3600",
+        "-c:a",
+        "pcm_s16le",
+        str(destination),
+    ]
+    run_ffmpeg(command)
+    return destination
+
+
+def trim_to_duration(audio: Path, destination: Path, duration: float) -> Path:
+    command = [
+        find_ffmpeg(),
+        "-y",
+        "-i",
+        str(audio),
+        "-t",
+        f"{duration:.3f}",
+        "-c:a",
+        "pcm_s16le",
+        str(destination),
+    ]
+    run_ffmpeg(command)
+    return destination
+
+
+def mux_audio(video: Path, audio: Path, destination: Path) -> Path:
+    command = [
+        find_ffmpeg(),
+        "-y",
+        "-i",
+        str(video),
+        "-i",
+        str(audio),
+        "-map",
+        "0:v",
+        "-map",
+        "1:a",
+        "-c:v",
+        "copy",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "192k",
+        "-shortest",
+        "-movflags",
+        "+faststart",
+        str(destination),
+    ]
+    run_ffmpeg(command)
+    return destination
+
+
+def burn_subtitles(video: Path, srt: Path, destination: Path, *, force_style: str | None = None) -> Path:
+    relative = os.path.relpath(srt).replace("\\", "/")
+    if re.match(r"^[A-Za-z]:", relative):
+        relative = relative[0] + "\\:" + relative[1:]
+    filter_string = f"subtitles={relative}"
+    if force_style:
+        filter_string += f":force_style='{force_style}'"
+    command = [
+        find_ffmpeg(),
+        "-y",
+        "-i",
+        str(video),
+        "-vf",
+        filter_string,
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "20",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "copy",
+        "-movflags",
+        "+faststart",
+        str(destination),
+    ]
+    run_ffmpeg(command)
+    return destination
+
+
+def make_thumbnail(
+    video: Path,
+    destination: Path,
+    *,
+    candidate_seconds: list[float],
+    title: str | None = None,
+    width: int = 720,
+    height: int = 1280,
+    font_path: str | None = None,
+) -> Path:
+    """Pick the sharpest candidate frame and optionally overlay a title."""
+    import shutil
+    import tempfile
+
+    import numpy as np
+
+    work = Path(tempfile.mkdtemp(prefix="thumb_"))
+    try:
+        scored: list[tuple[float, Path]] = []
+        for index, at in enumerate(candidate_seconds):
+            frame = work / f"frame_{index}.png"
+            command = [
+                find_ffmpeg(),
+                "-y",
+                "-ss",
+                f"{max(0.0, float(at)):.3f}",
+                "-i",
+                str(video),
+                "-frames:v",
+                "1",
+                "-vf",
+                f"scale={width}:{height}",
+                str(frame),
+            ]
+            run_ffmpeg(command)
+            if not frame.exists():
+                continue
+            import imageio.v2 as imageio
+
+            pixels = imageio.imread(frame).astype(np.float32)
+            gray = pixels.mean(axis=2)
+            gy, gx = np.gradient(gray)
+            sharpness = float(np.var(np.sqrt(gx * gx + gy * gy)))
+            scored.append((sharpness, frame))
+        if not scored:
+            raise ProcessingError("Thumbnail extraction produced no frames")
+        scored.sort(reverse=True)
+        best = scored[0][1]
+
+        final = work / "final.png"
+        shutil.copyfile(best, final)
+        if title:
+            font = font_path or "C\\:/Windows/Fonts/courbd.ttf"
+            title_file = work / "title.txt"
+            title_file.write_text(title, encoding="utf-8")
+            title_file_arg = str(title_file).replace("\\", "/").replace(":", "\\:")
+            escaped_title_file = title_file_arg[0] + "\\:" + title_file_arg[1:] if re.match(r"^[A-Za-z]:", title_file_arg) else title_file_arg
+            command = [
+                find_ffmpeg(),
+                "-y",
+                "-i",
+                str(final),
+                "-vf",
+                (
+                    "drawtext=fontfile='"
+                    + font
+                    + "':textfile='"
+                    + escaped_title_file
+                    + "':fontcolor=white:fontsize=44:borderw=3:bordercolor=black:box=1:boxcolor=black@0.45:boxborderw=18:x=(w-text_w)/2:y=h*0.16"
+                ),
+                str(destination),
+            ]
+            run_ffmpeg(command)
+        else:
+            shutil.copyfile(final, destination)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
     return destination
 
 

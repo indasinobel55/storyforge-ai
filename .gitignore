@@ -47,3 +47,11 @@ Thumbs.db
 # Test/scratch workspaces and deploy bundles
 tmp*/
 *.zip
+
+# Local tool installs (see tools/README.md)
+tools/kokoro/models/
+tools/soundbox/
+tools/ffmpeg/
+tools/youtube-mcp/
+tools/subtitle/
+tools/*.log

@@ -18,6 +18,10 @@ LOGIN_URL = "https://theresanaiforthat.com/login/?redirect_to=%2F%40taaft%2Fvide
 TERMINAL_FAIL = {"failed", "error", "canceled", "cancelled"}
 TERMINAL_OK = {"succeeded", "success", "completed"}
 
+TRANSIENT_STATUS = {408, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524}
+TRANSIENT_RETRY_ATTEMPTS = 5
+TRANSIENT_BACKOFF_SECONDS = 5.0
+
 FEASIBILITY_MESSAGE = (
     "Real TAAFT automation is disabled. TAAFT's Terms of Service (updated 2026-03-19) prohibit automated "
     "access and circumventing security without prior written consent. See TAAFT_INTEGRATION_FEASIBILITY.md. "
@@ -62,6 +66,8 @@ class TaaftProvider(VideoProvider):
         self.enhance = enhance
         self.tier = tier
         self.orientation = orientation
+        self._sticky_page: Any = None
+        self._sticky_context: Any = None
 
     def _assert_enabled(self) -> None:
         if not self.enabled:
@@ -86,6 +92,9 @@ class TaaftProvider(VideoProvider):
 
     @contextmanager
     def _browser_page(self):
+        if self._sticky_page is not None:
+            yield self._sticky_page
+            return
         from playwright.sync_api import sync_playwright
 
         if self.profile_dir is not None:
@@ -125,14 +134,67 @@ class TaaftProvider(VideoProvider):
                     viewport={"width": 1440, "height": 1100},
                     accept_downloads=True,
                 )
+            page = context.new_page()
+            try:
+                page.goto(GEN_URL, wait_until="domcontentloaded", timeout=90000)
+                self._wait_for_generator(page)
+                yield page
+            finally:
+                context.close()
+                browser.close()
+
+    @contextmanager
+    def session(self):
+        """Open ONE browser + page and reuse it for every operation inside the block.
+
+        Prevents the submit/poll/download cycle from spawning a new browser per
+        call. All sync methods reuse the sticky page while a session is active.
+        """
+        from playwright.sync_api import sync_playwright
+
+        if self.profile_dir is not None:
+            self._assert_enabled()
+        else:
+            self._assert_session()
+        if self._sticky_page is not None:
+            yield self._sticky_page
+            return
+        with sync_playwright() as playwright:
+            chrome = self._resolve_chrome()
+            if self.profile_dir is not None:
+                self.profile_dir.mkdir(parents=True, exist_ok=True)
+                launch_kwargs: dict[str, Any] = {"headless": self.headless}
+                if chrome:
+                    launch_kwargs["executable_path"] = chrome
+                context = playwright.chromium.launch_persistent_context(
+                    str(self.profile_dir),
+                    viewport={"width": 1440, "height": 1100},
+                    accept_downloads=True,
+                    args=["--disable-blink-features=AutomationControlled", "--start-maximized"],
+                    **launch_kwargs,
+                )
+                page = context.pages[0] if context.pages else context.new_page()
+            else:
+                launch_kwargs = {"headless": self.headless}
+                if chrome:
+                    launch_kwargs["executable_path"] = chrome
+                browser = playwright.chromium.launch(**launch_kwargs)
+                context = browser.new_context(
+                    storage_state=str(self.storage_state_path),
+                    viewport={"width": 1440, "height": 1100},
+                    accept_downloads=True,
+                )
                 page = context.new_page()
-                try:
-                    page.goto(GEN_URL, wait_until="domcontentloaded", timeout=90000)
-                    self._wait_for_generator(page)
-                    yield page
-                finally:
-                    context.close()
-                    browser.close()
+            self._sticky_page = page
+            self._sticky_context = context
+            try:
+                page.goto(GEN_URL, wait_until="domcontentloaded", timeout=120000)
+                self._wait_for_generator(page)
+                yield page
+            finally:
+                self._sticky_page = None
+                self._sticky_context = None
+                context.close()
 
     def _wait_for_generator(self, page, timeout: int = 180) -> None:
         deadline = time.time() + timeout
@@ -146,27 +208,40 @@ class TaaftProvider(VideoProvider):
         raise ProviderAuthError("Timed out waiting for the TAAFT generator page or Cloudflare challenge")
 
     def _api_json(self, page, path: str) -> dict[str, Any]:
-        result = page.evaluate(
-            """async (path) => {
-                const response = await fetch(path, {
-                    credentials: 'include',
-                    headers: {'X-Requested-With': 'XMLHttpRequest'}
-                });
-                return {status: response.status, text: await response.text()};
-            }""",
-            path,
-        )
-        status = int(result.get("status") or 0)
-        text = result.get("text") or ""
-        try:
-            data = json.loads(text)
-        except Exception:
-            data = {"raw": text}
-        if status == 401:
-            raise ProviderAuthError("TAAFT session expired; reconnect the account")
-        if status >= 400:
-            raise GenerationError(f"TAAFT API {path} returned {status}")
-        return data
+        attempt = 0
+        while True:
+            try:
+                result = page.evaluate(
+                    """async (path) => {
+                        const response = await fetch(path, {
+                            credentials: 'include',
+                            headers: {'X-Requested-With': 'XMLHttpRequest'}
+                        });
+                        return {status: response.status, text: await response.text()};
+                    }""",
+                    path,
+                )
+            except Exception:
+                if attempt >= TRANSIENT_RETRY_ATTEMPTS:
+                    raise
+                attempt += 1
+                time.sleep(TRANSIENT_BACKOFF_SECONDS * (2 ** (attempt - 1)))
+                continue
+            status = int(result.get("status") or 0)
+            text = result.get("text") or ""
+            try:
+                data = json.loads(text)
+            except Exception:
+                data = {"raw": text}
+            if status == 401:
+                raise ProviderAuthError("TAAFT session expired; reconnect the account")
+            if status in TRANSIENT_STATUS and attempt < TRANSIENT_RETRY_ATTEMPTS:
+                attempt += 1
+                time.sleep(TRANSIENT_BACKOFF_SECONDS * (2 ** (attempt - 1)))
+                continue
+            if status >= 400:
+                raise GenerationError(f"TAAFT API {path} returned {status}")
+            return data
 
     def _read_config(self, page) -> dict[str, Any]:
         return page.evaluate("window.VIDEOGEN_GENERATOR_CONFIG || {}")
