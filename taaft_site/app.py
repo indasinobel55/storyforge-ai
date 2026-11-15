@@ -17,6 +17,16 @@ class JobRequest(BaseModel):
     scene_count: int = 1
 
 
+class ProgressRequest(BaseModel):
+    scene: int
+    status: str
+    generation_id: str | None = None
+
+
+class CompleteRequest(BaseModel):
+    error: str | None = None
+
+
 app = FastAPI(title="TAAFT Agent Site", docs_url=None, redoc_url=None)
 runner = JobRunner()
 SITE_TOKEN = os.environ.get("SITE_TOKEN", "").strip()
@@ -91,6 +101,59 @@ def job_file(job_id: str, filename: str) -> FileResponse:
     if not path.exists():
         raise HTTPException(status_code=404, detail="file not found")
     return FileResponse(path, media_type="video/mp4", filename=safe)
+
+
+@app.get("/api/session/file")
+def session_file(x_site_token: str | None = Header(default=None)) -> FileResponse:
+    _check_token(x_site_token)
+    path = runner.session_path()
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="no session stored")
+    return FileResponse(path, media_type="application/json", filename="session.json")
+
+
+@app.post("/api/jobs/{job_id}/progress")
+async def job_progress(job_id: str, body: "ProgressRequest", x_site_token: str | None = Header(default=None)) -> dict:
+    _check_token(x_site_token)
+    updates = {"status": body.status}
+    if body.generation_id:
+        updates["generation_id"] = body.generation_id
+    try:
+        runner.update_progress(job_id, body.scene, **updates)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="unknown job") from None
+    return {"ok": True}
+
+
+@app.post("/api/jobs/{job_id}/files/{filename}")
+async def job_upload(
+    job_id: str, filename: str, file: UploadFile = File(...), x_site_token: str | None = Header(default=None)
+) -> dict:
+    _check_token(x_site_token)
+    safe = Path(filename).name
+    try:
+        path = runner.store_file(job_id, safe, await file.read())
+    except KeyError:
+        raise HTTPException(status_code=404, detail="unknown job") from None
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
+    job = runner.jobs[job_id]
+    for entry in job["scenes"]:
+        expected = f"scene_{entry['scene']:02d}.mp4"
+        if safe == expected:
+            entry["filename"] = safe
+            entry["status"] = "done"
+    return {"ok": True, "bytes": path.stat().st_size}
+
+
+@app.post("/api/jobs/{job_id}/complete")
+async def job_complete(job_id: str, body: "CompleteRequest", x_site_token: str | None = Header(default=None)) -> dict:
+    _check_token(x_site_token)
+    try:
+        runner.complete_job(job_id, body.error)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="unknown job") from None
+    return {"ok": True, "status": runner.jobs[job_id]["status"]}
 
 
 @app.get("/")
