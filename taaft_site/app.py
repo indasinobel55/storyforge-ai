@@ -11,6 +11,12 @@ from pydantic import BaseModel
 
 from taaft_site.worker import DATA_DIR, JobRunner
 
+
+class JobRequest(BaseModel):
+    prompt: str
+    scene_count: int = 1
+
+
 app = FastAPI(title="TAAFT Agent Site", docs_url=None, redoc_url=None)
 runner = JobRunner()
 SITE_TOKEN = os.environ.get("SITE_TOKEN", "").strip()
@@ -95,8 +101,3 @@ def index() -> FileResponse:
 @app.get("/favicon.ico")
 def favicon() -> JSONResponse:
     return JSONResponse(content={})
-
-
-class JobRequest(BaseModel):
-    prompt: str
-    scene_count: int = 1
