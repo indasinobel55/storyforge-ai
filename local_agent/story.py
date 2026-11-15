@@ -47,7 +47,7 @@ FATAL_PAGE_MARKERS = ("target closed", "browser has been closed", "page.goto", "
 class StoryConfig:
     work_dir: Path = field(default_factory=lambda: Path("local_work/story"))
     provider: str = "simulated"
-    tier: str = "fast"
+    tier: str = "quality"
     orientation: str = "landscape"
     headless: bool = False
     profile_dir: Path = field(default_factory=lambda: Path(".taaft_chrome_profile"))
@@ -407,7 +407,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--scene-seconds", type=int, default=8)
     parser.add_argument("--title", default="The Lighthouse Mirror")
     parser.add_argument("--script-file", default=None, help="Path to a text file with the story script")
-    parser.add_argument("--tier", choices=["fast", "quality"], default="fast")
+    parser.add_argument("--tier", choices=["fast", "quality"], default="quality")
     parser.add_argument("--headless", action="store_true")
     return parser
 

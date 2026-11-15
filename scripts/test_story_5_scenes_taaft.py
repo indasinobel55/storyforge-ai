@@ -55,7 +55,7 @@ async def main() -> dict:
         headless=False,
         poll_seconds=20,
         job_timeout_seconds=3600,
-        tier="fast",
+        tier="quality",
     )
     for scene in plan.scenes:
         clip = WORK / f"scene_{scene.scene_number:02d}.mp4"
@@ -66,7 +66,7 @@ async def main() -> dict:
         print(f"[scene {scene.scene_number}/5] submitting to TAAFT...", flush=True)
         result = await provider.submit_generation(
             prompt=scene.prompt,
-            tier="fast",
+            tier="quality",
             orientation="landscape",
             duration=scene.duration,
             idempotency_key=f"story5taaft-{scene.scene_number}",

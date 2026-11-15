@@ -76,3 +76,23 @@ block from `.env.example` into `.env` to switch tools on.
   done in the GUI via Tools → Batch convert, Synchronization and Video →
   Speech to text. For automated subtitle conversion in the pipeline, FFmpeg
   is used instead (`ffmpeg -i story.srt story.vtt`).
+
+## 6. video2x — AI upscaling and frame interpolation post-processing
+
+- GitHub: https://github.com/k4yt3x/video2x (AGPL-3.0)
+- Installed at: `C:/Program Files/video2x/` (pre-built v6.4.0 binaries)
+- Uses Vulkan GPU acceleration via ncnn backend (NVIDIA RTX 4060 compatible)
+- Two main AI models:
+  - **Real-ESRGAN** — spatial upscaling (maximizes resolution)
+  - **RIFE** — frame interpolation (increases frame rate)
+- Command-line: `video2x.exe` with flags `-s <scale>` and `-m <model>`
+- Typical workflow after video generation:
+  1. Upscale resolution with Real-ESRGAN (e.g., 4× max upscale)
+  2. Optionally interpolate frames with RIFE (e.g., 24fps → 48fps or 60fps)
+  3. Re-encode with FFmpeg: `ffmpeg -i input.mp4 -c:v libx264 -pix_fmt yuv420p -crf 17 -preset medium output.mp4`
+  4. The `yuv420p` pixel format ensures Windows Media Player and most players compatibility
+- Verified output: 864×480 source → 3456×1920 (4×) at 24fps, H.264 yuv420p
+- Enables maximizing video resolution while maintaining broad player compatibility
+
+- VIDEO2X_ENABLED=1
+- VIDEO2X_PATH=C:/Program Files/video2x (optional explicit path; otherwise auto-detected)

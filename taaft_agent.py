@@ -45,7 +45,7 @@ GEN_URL = "https://theresanaiforthat.com/@taaft/video-generator/?ref=header"
 LOGIN_URL = "https://theresanaiforthat.com/login/?redirect_to=%2F%40taaft%2Fvideo-generator%2F"
 POLLINATIONS_URL = "https://text.pollinations.ai/openai"
 DEFAULT_STYLE = "cinematic photorealistic short film, 35mm lens, shallow depth of field, natural film grain, consistent color grade"
-DEFAULT_TIER = "fast"
+DEFAULT_TIER = "quality"
 DEFAULT_ORIENTATION = "landscape"
 DEFAULT_SCENE_SECONDS = 8
 DEFAULT_TARGET_SCENES = 6

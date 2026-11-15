@@ -14,7 +14,7 @@ def main() -> None:
         enabled=True,
         profile_dir=Path(".taaft_chrome_profile"),
         headless=False,
-        tier="fast",
+        tier="quality",
     )
     chrome = provider._resolve_chrome()
     from playwright.sync_api import sync_playwright

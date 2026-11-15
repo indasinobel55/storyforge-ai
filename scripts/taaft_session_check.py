@@ -16,7 +16,7 @@ async def main() -> None:
         headless=False,
         poll_seconds=20,
         job_timeout_seconds=3600,
-        tier="fast",
+        tier="quality",
     )
     print("Opening TAAFT in Chrome (persistent profile)...")
     account = await provider.verify_account()
