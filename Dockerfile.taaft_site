@@ -1,0 +1,26 @@
+# TAAFT-only site: pure Python + Playwright Chromium in a single uvicorn
+# process. Sized for the Render free tier (512MB): no Node, no database,
+# no separate worker process.
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir fastapi "uvicorn[standard]" playwright requests python-multipart \
+    && python -m playwright install --with-deps chromium \
+    && chmod -R a+rX /opt/ms-playwright
+
+COPY agent ./agent
+COPY taaft_site ./taaft_site
+
+RUN mkdir -p /app/data
+
+EXPOSE 10000
+
+CMD ["sh", "-c", "uvicorn taaft_site.app:app --host 0.0.0.0 --port ${PORT:-10000}"]

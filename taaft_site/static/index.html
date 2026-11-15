@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAAFT Agent</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: #0b0d12; color: #e6e8ee;
+    font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; flex-direction: column; align-items: center; padding: 32px 16px 64px;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: .5px; }
+  .sub { color: #8b93a7; font-size: .9rem; margin-bottom: 28px; }
+  .card {
+    width: 100%; max-width: 680px; background: #12151d; border: 1px solid #232838;
+    border-radius: 14px; padding: 22px; margin-bottom: 18px;
+  }
+  label { display: block; font-size: .8rem; color: #8b93a7; text-transform: uppercase;
+    letter-spacing: .08em; margin: 14px 0 6px; }
+  textarea, input[type=number], input[type=password] {
+    width: 100%; background: #0b0d12; border: 1px solid #2a3042; color: #e6e8ee;
+    border-radius: 8px; padding: 10px 12px; font-size: .95rem; font-family: inherit;
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  textarea:focus, input:focus { outline: none; border-color: #4c6ef5; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  button {
+    background: #4c6ef5; border: none; color: white; font-weight: 600;
+    padding: 11px 22px; border-radius: 8px; font-size: .95rem; cursor: pointer; margin-top: 16px;
+  }
+  button:disabled { background: #2a3042; color: #6b7387; cursor: not-allowed; }
+  button.ghost { background: #1c2130; color: #aeb6c8; margin-top: 0; }
+  .hint { font-size: .8rem; color: #6b7387; margin-top: 8px; line-height: 1.5; }
+  .scenes { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .scene {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #0b0d12; border: 1px solid #232838; border-radius: 8px; padding: 10px 14px;
+  }
+  .scene a { color: #7aa2ff; text-decoration: none; font-weight: 600; }
+  .badge { font-size: .75rem; padding: 3px 10px; border-radius: 999px; background: #1c2130; color: #aeb6c8; }
+  .badge.done { background: #103a2c; color: #4ade80; }
+  .badge.failed, .badge.error { background: #3a1214; color: #f87171; }
+  .badge.running { background: #14284d; color: #7aa2ff; }
+  .status { font-size: .85rem; color: #8b93a7; margin-top: 10px; min-height: 1.2em; }
+  .error { color: #f87171; font-size: .85rem; margin-top: 10px; white-space: pre-wrap; }
+  video { width: 100%; border-radius: 8px; margin-top: 14px; background: black; }
+  .ok { color: #4ade80; } .bad { color: #f87171; }
+</style>
+</head>
+<body>
+  <h1>TAAFT Agent</h1>
+  <div class="sub">Fully online text-to-video automation of <b>thisagentdoesnotexist.com</b> &mdash; nothing else.</div>
+
+  <div class="card" id="sessionCard">
+    <div class="row" style="justify-content: space-between">
+      <strong>TAAFT session</strong>
+      <span class="badge" id="sessionBadge">checking…</span>
+    </div>
+    <label for="sessionFile">Upload Playwright storage_state JSON (login on your PC, export, upload here)</label>
+    <input type="password" id="siteToken" placeholder="X-Site-Token (if set on the server)">
+    <div class="row" style="margin-top:10px">
+      <input type="file" id="sessionFile" accept=".json" style="flex:1">
+      <button class="ghost" id="uploadBtn" style="margin-top:0">Upload</button>
+    </div>
+    <div class="hint" id="sessionMsg"></div>
+  </div>
+
+  <div class="card">
+    <strong>Generate a video</strong>
+    <label for="prompt">Prompt (adults only — the TAAFT content filter rejects minors on screen)</label>
+    <textarea id="prompt" placeholder="Cinematic scene description…"></textarea>
+    <label for="sceneCount">Scenes (1–8, each ~8 seconds)</label>
+    <div class="row">
+      <input type="number" id="sceneCount" min="1" max="8" value="1" style="width:110px">
+      <span class="hint" style="margin:0">Scene 2+ auto-extends the previous shot for continuity.</span>
+    </div>
+    <button id="goBtn">Generate</button>
+    <div class="status" id="status"></div>
+    <div class="error" id="error"></div>
+    <div class="scenes" id="scenes"></div>
+    <div id="previewBox"></div>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let currentJob = null, pollTimer = null;
+
+const headers = () => {
+  const h = { "Content-Type": "application/json" };
+  const t = $("siteToken").value.trim();
+  if (t) h["X-Site-Token"] = t;
+  return h;
+};
+const fdHeaders = () => {
+  const h = {};
+  const t = $("siteToken").value.trim();
+  if (t) h["X-Site-Token"] = t;
+  return h;
+};
+
+async function refreshSession() {
+  try {
+    const r = await fetch("/api/session");
+    const j = await r.json();
+    const b = $("sessionBadge");
+    if (j.connected) { b.textContent = "connected"; b.className = "badge done"; }
+    else { b.textContent = "not connected"; b.className = "badge failed"; }
+  } catch { $("sessionBadge").textContent = "offline"; }
+}
+
+$("uploadBtn").onclick = async () => {
+  const f = $("sessionFile").files[0];
+  if (!f) { $("sessionMsg").innerHTML = '<span class="bad">pick a storage_state JSON file first</span>'; return; }
+  $("sessionMsg").textContent = "uploading…";
+  const fd = new FormData(); fd.append("file", f);
+  try {
+    const r = await fetch("/api/session", { method: "POST", headers: fdHeaders(), body: fd });
+    const j = await r.json();
+    if (r.ok) { $("sessionMsg").innerHTML = '<span class="ok">session stored ✓</span>'; refreshSession(); }
+    else $("sessionMsg").innerHTML = '<span class="bad">' + (j.detail || "upload failed") + '</span>';
+  } catch (e) { $("sessionMsg").innerHTML = '<span class="bad">' + e + '</span>'; }
+};
+
+function sceneRow(s) {
+  const cls = s.status === "done" ? "done" : ["failed","error"].includes(s.status) ? "failed" : s.status === "pending" ? "" : "running";
+  const link = s.filename ? ` <a href="/api/jobs/${currentJob.job_id}/files/${s.filename}">download</a>` : "";
+  const id = s.generation_id ? ` <span style="color:#555;font-size:.7rem">${s.generation_id.slice(0,8)}</span>` : "";
+  return `<div class="scene"><span>Scene ${s.scene}${id}</span><span class="badge ${cls}">${s.status}</span></div>`;
+}
+
+async function poll() {
+  if (!currentJob) return;
+  const r = await fetch("/api/jobs/" + currentJob.job_id);
+  const j = await r.json();
+  $("scenes").innerHTML = j.scenes.map(sceneRow).join("");
+  const active = j.scenes.filter(s => s.status !== "pending" && s.status !== "done").length;
+  $("status").textContent = "job " + j.job_id + " — " + j.status + (j.scenes.some(s=>s.status==="done") ? ` — ${j.scenes.filter(s=>s.status==="done").length}/${j.scene_count} scenes done` : "");
+  if (j.status === "completed") {
+    $("status").innerHTML = '<span class="ok">completed ✓</span>';
+    const last = j.scenes[j.scenes.length-1];
+    if (last && last.filename) {
+      $("previewBox").innerHTML = `<video controls src="/api/jobs/${j.job_id}/files/${last.filename}"></video>`;
+    }
+    $("goBtn").disabled = false; currentJob = null; return;
+  }
+  if (j.status === "failed") {
+    $("error").textContent = j.error || "job failed";
+    $("goBtn").disabled = false; currentJob = null; return;
+  }
+  pollTimer = setTimeout(poll, 4000);
+}
+
+$("goBtn").onclick = async () => {
+  $("error").textContent = ""; $("previewBox").innerHTML = ""; $("scenes").innerHTML = "";
+  const prompt = $("prompt").value.trim();
+  if (prompt.length < 20) { $("error").textContent = "prompt too short"; return; }
+  $("goBtn").disabled = true; $("status").textContent = "starting…";
+  try {
+    const r = await fetch("/api/jobs", {
+      method: "POST", headers: headers(),
+      body: JSON.stringify({ prompt, scene_count: parseInt($("sceneCount").value || "1", 10) })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || "failed to create job");
+    currentJob = j; poll();
+  } catch (e) { $("error").textContent = e.message || String(e); $("goBtn").disabled = false; }
+};
+
+refreshSession();
+</script>
+</body>
+</html>
