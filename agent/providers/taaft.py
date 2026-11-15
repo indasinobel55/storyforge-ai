@@ -30,6 +30,16 @@ STEALTH_ARGS = [
     "--disable-dev-shm-usage",
     "--no-first-run",
     "--no-default-browser-check",
+    # Memory savings for small cloud containers (Render free tier = 512MB):
+    # block images (the generator page is text+form driven), no GPU, one renderer.
+    "--disable-gpu",
+    "--disable-software-rasterizer",
+    "--renderer-process-limit=1",
+    "--blink-settings=imagesEnabled=false",
+    "--mute-audio",
+    "--disable-extensions",
+    "--disable-background-networking",
+    "--disable-component-extensions-with-background-pages",
 ]
 
 FEASIBILITY_MESSAGE = (
