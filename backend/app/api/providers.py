@@ -132,7 +132,7 @@ async def connect_provider(
                 ),
             )
         state_json = _validate_storage_state(payload.storage_state)
-        account = _get_taaft_account(db, user.id)
+        account = await _get_taaft_account(db, user.id)
         if account is None:
             account = ProviderAccount(user_id=user.id, provider="taaft", status="disconnected")
             db.add(account)
@@ -185,7 +185,7 @@ async def verify_provider(
     if provider == "taaft":
         if not settings.taaft_enabled:
             raise HTTPException(status_code=409, detail="TAAFT automation is disabled on this deployment")
-        account = _get_taaft_account(db, user.id)
+        account = await _get_taaft_account(db, user.id)
         if account is None or not account.encrypted_session:
             raise HTTPException(status_code=404, detail="TAAFT is not connected; connect a session first")
         state_file = _taaft_session_path(user.id)
