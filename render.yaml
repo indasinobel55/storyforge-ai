@@ -1,0 +1,51 @@
+# Render Blueprint — StoryForge AI all-in-one service
+# Deploys ONE web service running FastAPI (API) + cloud worker (TAAFT/job loop)
+# + Next.js frontend in a single container. This fixes "backend is not available":
+# /api/* is proxied to the API inside the same container (see start-all.sh).
+#
+# How to use:
+#   Render Dashboard → New + → Blueprint → connect indasinobel55/storyforge-ai → Apply.
+#   Render builds Dockerfile.allinone and exposes it on $PORT (10000).
+#
+# After creation:
+#   1. Set DATABASE_URL (Neon Postgres recommended — free tier disks are ephemeral).
+#   2. Set FRONTEND_ORIGIN to this service's public URL (https://<name>.onrender.com).
+#   3. Put the public URL in this repo variable NEXT_PUBLIC_API_URL so the
+#      GitHub Pages build points at the live backend.
+#   4. The keep-alive workflow (.github/workflows/keep-alive.yml) pings this
+#      service every 10 minutes so the free instance never sleeps.
+
+services:
+  - type: web
+    name: storyforge-allinone
+    runtime: docker
+    dockerfilePath: ./Dockerfile.allinone
+    dockerContext: .
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: AUTO_CREATE_SCHEMA
+        value: "true"
+      - key: DEV_EXPOSE_RESET_TOKEN
+        value: "false"
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: EXECUTION_MODE
+        value: cloud
+      - key: SIMULATED_PROVIDER_ENABLED
+        value: "true"
+      - key: TAAFT_ENABLED
+        value: "true"
+      - key: TAAFT_HEADLESS
+        value: "true"
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: /opt/ms-playwright
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false

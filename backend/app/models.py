@@ -102,7 +102,7 @@ class Project(TimestampMixin, Base):
     target_duration_seconds: Mapped[int] = mapped_column(Integer, default=48, nullable=False)
     target_scene_count: Mapped[int] = mapped_column(Integer, default=6, nullable=False)
     scene_seconds: Mapped[int] = mapped_column(Integer, default=8, nullable=False)
-    tier: Mapped[str] = mapped_column(String(20), default="fast", nullable=False)
+    tier: Mapped[str] = mapped_column(String(20), default="quality", nullable=False)
     resolution: Mapped[str] = mapped_column(String(20), default="1280x720", nullable=False)
     quality: Mapped[str] = mapped_column(String(20), default="standard", nullable=False)
     provider: Mapped[str] = mapped_column(String(40), default="simulated", nullable=False)

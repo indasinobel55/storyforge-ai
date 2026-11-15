@@ -22,6 +22,16 @@ TRANSIENT_STATUS = {408, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524}
 TRANSIENT_RETRY_ATTEMPTS = 5
 TRANSIENT_BACKOFF_SECONDS = 5.0
 
+# Anti-bot hardening applied to non-persistent (storage_state) browser launches,
+# i.e. the cloud/worker path. Keeps the persistent real-Chrome profile mode
+# untouched.
+STEALTH_ARGS = [
+    "--disable-blink-features=AutomationControlled",
+    "--disable-dev-shm-usage",
+    "--no-first-run",
+    "--no-default-browser-check",
+]
+
 FEASIBILITY_MESSAGE = (
     "Real TAAFT automation is disabled. TAAFT's Terms of Service (updated 2026-03-19) prohibit automated "
     "access and circumventing security without prior written consent. See TAAFT_INTEGRATION_FEASIBILITY.md. "
@@ -83,8 +93,14 @@ class TaaftProvider(VideoProvider):
     def _resolve_chrome(self) -> str | None:
         for candidate in (
             self.chrome_path,
+            os.environ.get("TAAFT_CHROME_PATH"),
+            os.environ.get("CHROME_PATH"),
             "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
             "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+            "/usr/bin/google-chrome",
+            "/usr/bin/google-chrome-stable",
+            "/usr/bin/chromium",
+            "/usr/bin/chromium-browser",
         ):
             if candidate and Path(candidate).exists():
                 return str(candidate)
@@ -101,10 +117,10 @@ class TaaftProvider(VideoProvider):
             self._assert_enabled()
         else:
             self._assert_session()
-        with sync_playwright() as playwright:
-            if self.profile_dir is not None:
-                # Persistent real-Chrome profile mode: login and Cloudflare trust
-                # survive between operations, mirroring the original taaft agent.
+        if self.profile_dir is not None:
+            # Persistent real-Chrome profile mode: login and Cloudflare trust
+            # survive between operations, mirroring the original taaft agent.
+            with sync_playwright() as playwright:
                 self.profile_dir.mkdir(parents=True, exist_ok=True)
                 launch_kwargs: dict[str, Any] = {"headless": self.headless}
                 chrome = self._resolve_chrome()
@@ -124,16 +140,18 @@ class TaaftProvider(VideoProvider):
                     yield page
                 finally:
                     context.close()
-            else:
-                launch_kwargs = {"headless": self.headless}
-                if self.chrome_path and Path(self.chrome_path).exists():
-                    launch_kwargs["executable_path"] = self.chrome_path
-                browser = playwright.chromium.launch(**launch_kwargs)
-                context = browser.new_context(
-                    storage_state=str(self.storage_state_path),
-                    viewport={"width": 1440, "height": 1100},
-                    accept_downloads=True,
-                )
+            return
+        with sync_playwright() as playwright:
+            launch_kwargs = {"headless": self.headless}
+            if self.chrome_path and Path(self.chrome_path).exists():
+                launch_kwargs["executable_path"] = self.chrome_path
+            launch_kwargs["args"] = STEALTH_ARGS
+            browser = playwright.chromium.launch(**launch_kwargs)
+            context = browser.new_context(
+                storage_state=str(self.storage_state_path),
+                viewport={"width": 1440, "height": 1100},
+                accept_downloads=True,
+            )
             page = context.new_page()
             try:
                 page.goto(GEN_URL, wait_until="domcontentloaded", timeout=90000)
@@ -178,6 +196,7 @@ class TaaftProvider(VideoProvider):
                 launch_kwargs = {"headless": self.headless}
                 if chrome:
                     launch_kwargs["executable_path"] = chrome
+                launch_kwargs["args"] = STEALTH_ARGS
                 browser = playwright.chromium.launch(**launch_kwargs)
                 context = browser.new_context(
                     storage_state=str(self.storage_state_path),
@@ -247,7 +266,7 @@ class TaaftProvider(VideoProvider):
         return page.evaluate("window.VIDEOGEN_GENERATOR_CONFIG || {}")
 
     def _set_tier(self, page, tier: str) -> None:
-        tier = tier if tier in {"fast", "quality"} else "fast"
+        tier = tier if tier in {"fast", "quality"} else "quality"
         button = page.locator(f'.videogen_pill[data-videogen-tier="{tier}"]')
         if button.count() == 0:
             raise GenerationError(f"Tier button not found: {tier}")
@@ -267,14 +286,42 @@ class TaaftProvider(VideoProvider):
         else:
             locator.uncheck()
 
-    def _set_reference(self, page, image_path: Path) -> None:
-        page.locator("#videogen_image_input").set_input_files(str(image_path))
-        deadline = time.time() + 30
-        while time.time() < deadline:
-            if page.locator(".videogen_image_chip").count() > 0:
-                return
-            time.sleep(0.5)
-        raise GenerationError(f"Reference image did not attach: {image_path}")
+    def _set_reference(self, page, reference: Path | list[Path]) -> None:
+        paths = (
+            [Path(p) for p in reference]
+            if isinstance(reference, (list, tuple))
+            else [Path(reference)]
+        )
+        if not paths:
+            return
+        input_loc = page.locator("#videogen_image_input")
+        target = len(paths)
+        try:
+            input_loc.set_input_files([str(p) for p in paths])
+            deadline = time.time() + 60
+            while time.time() < deadline:
+                if page.locator(".videogen_image_chip").count() >= target:
+                    return
+                time.sleep(0.5)
+        except Exception:
+            pass
+        for path in paths:
+            if page.locator(".videogen_image_chip").count() >= target:
+                break
+            before = page.locator(".videogen_image_chip").count()
+            try:
+                input_loc.set_input_files(str(path))
+            except Exception:
+                continue
+            deadline = time.time() + 30
+            while time.time() < deadline:
+                current = page.locator(".videogen_image_chip").count()
+                if current > before or current >= target:
+                    break
+                time.sleep(0.5)
+        attached = page.locator(".videogen_image_chip").count()
+        if attached < 1:
+            raise GenerationError(f"Reference images did not attach: {[str(p) for p in paths]}")
 
     def _parse_generation_response(self, response) -> dict[str, Any]:
         status = int(response.status)
@@ -288,7 +335,12 @@ class TaaftProvider(VideoProvider):
         if status == 409 and data.get("active_generation_id"):
             return {"id": data["active_generation_id"], "status": "queued", "adopted": True}
         if status < 200 or status >= 300 or not data.get("generation"):
-            raise GenerationError(f"TAAFT generation submission failed ({status})")
+            # NOTE: TAAFT enforces a keyword policy on prompts - any minor/age
+            # wording ("child", "years old", etc., even in a series title) is
+            # rejected with 422 reason_code=keyword_policy. Keep prompts free
+            # of that wording; see memory/taaft-content-rules.md.
+            detail = (data.get("raw") or text)[:1200] if not data.get("generation") else ""
+            raise GenerationError(f"TAAFT generation submission failed ({status}): {detail}")
         return data["generation"]
 
     def _wait_for_extend_button(self, page, timeout: int = 180) -> None:

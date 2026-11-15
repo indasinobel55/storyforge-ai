@@ -1,0 +1,56 @@
+# Rebuilds the static export with the CURRENT code (new UI) and correct
+# basePath, then publishes it to the gh-pages branch that GitHub Pages serves.
+#
+# Optional repo variable NEXT_PUBLIC_API_URL: public backend URL baked into the
+# build (e.g. https://storyforge-allinone.onrender.com). If unset, points at the
+# existing Render frontend service.
+
+name: Deploy Site to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund
+
+      - name: Build static export
+        working-directory: frontend
+        env:
+          NEXT_OUTPUT_EXPORT: "true"
+          NEXT_BASE_PATH: /storyforge-ai
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'https://storyforge-frontend-1s1y.onrender.com' }}
+        run: npm run build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: frontend/out
+          force_orphan: true
+          commit_message: "Deploy static export (basePath /storyforge-ai, new UI)"

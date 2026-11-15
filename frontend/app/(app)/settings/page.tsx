@@ -131,17 +131,17 @@ export default function SettingsPage() {
     );
   }
 
-  async function connectProvider(provider: string) {
+  async function connectProvider(provider: string, storageState?: string) {
     await run(
       `provider-${provider}`,
       async () => {
         await api(`/api/providers/${provider}/connect`, {
           method: "POST",
-          body: JSON.stringify({ accept_terms: true }),
+          body: JSON.stringify({ accept_terms: true, storage_state: storageState ?? null }),
         });
         await load();
       },
-      "Provider connected",
+      storageState ? "Provider connected with session file" : "Provider connected",
     );
   }
 
@@ -322,7 +322,24 @@ export default function SettingsPage() {
                 </span>
                 {provider.requires_consent ? <span className="chip bg-amber-500/10 text-amber-300">Gated</span> : null}
                 <div className="ml-auto flex gap-2">
-                  {provider.connectable ? (
+                  {provider.provider === "taaft" && provider.connectable && !provider.connected ? (
+                    <label className="btn-secondary cursor-pointer px-3 py-1.5 text-xs">
+                      {busy === `provider-taaft` ? "Connecting…" : "Connect session file"}
+                      <input
+                        type="file"
+                        accept=".json,application/json"
+                        className="hidden"
+                        disabled={busy !== null}
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          event.target.value = "";
+                          if (!file) return;
+                          const text = await file.text();
+                          await connectProvider("taaft", text);
+                        }}
+                      />
+                    </label>
+                  ) : provider.connectable ? (
                     <button
                       className="btn-secondary px-3 py-1.5 text-xs"
                       disabled={busy !== null}
@@ -343,6 +360,13 @@ export default function SettingsPage() {
                 </div>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-slate-400">{provider.description}</p>
+              {provider.provider === "taaft" && !provider.connected ? (
+                <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                  Export a Playwright storage_state JSON from a logged-in TAAFT browser session and upload it with
+                  "Connect session file". The session is encrypted at rest and used by the cloud worker to automate
+                  TAAFT on your behalf.
+                </p>
+              ) : null}
               {provider.notes ? <p className="mt-1 text-[11px] leading-relaxed text-amber-200/70">{provider.notes}</p> : null}
               {provider.usage ? (
                 <p className="mt-1 text-[11px] text-slate-500">Usage: {JSON.stringify(provider.usage)}</p>

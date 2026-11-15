@@ -84,7 +84,7 @@ class ProjectCreateIn(BaseModel):
     target_duration_seconds: int = Field(default=48, ge=4, le=600)
     target_scene_count: int = Field(default=6, ge=1, le=20)
     scene_seconds: int = Field(default=8, ge=1, le=10)
-    tier: Literal["fast", "quality"] = "fast"
+    tier: Literal["fast", "quality"] = "quality"
     resolution: str = "1280x720"
     quality: Literal["standard", "high"] = "standard"
     provider: Literal["simulated", "taaft"] = "simulated"
@@ -269,6 +269,7 @@ class ProviderOut(BaseModel):
 
 class ProviderConnectIn(BaseModel):
     accept_terms: bool = False
+    storage_state: str | None = Field(default=None, max_length=4_000_000)
 
 
 class VideoOut(BaseModel):

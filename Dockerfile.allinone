@@ -27,6 +27,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Playwright browser binaries + OS libraries for real TAAFT automation.
+# Installed as root into a world-readable path before dropping to `studio`.
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
+RUN python -m playwright install --with-deps chromium \
+    && chmod -R a+rX /opt/ms-playwright
+
 COPY backend ./backend
 COPY agent ./agent
 COPY workers ./workers

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api, meta } from "@/lib/api";
-import type { Project, PublicConfig } from "@/lib/types";
+import type { Project, Provider, PublicConfig } from "@/lib/types";
 
 interface CharacterDraft {
   name: string;
@@ -32,6 +32,8 @@ export default function NewProjectPage() {
   const [voiceover, setVoiceover] = useState("");
   const [music, setMusic] = useState("");
   const [characters, setCharacters] = useState<CharacterDraft[]>([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [provider, setProvider] = useState("simulated");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -40,7 +42,13 @@ export default function NewProjectPage() {
       .config()
       .then(setConfig)
       .catch(() => undefined);
+    api<Provider[]>("/api/providers")
+      .then((items) => setProviders(items))
+      .catch(() => undefined);
   }, []);
+
+  const taaftConnected = providers.some((item) => item.provider === "taaft" && item.connected);
+  const taaftEnabled = providers.some((item) => item.provider === "taaft" && item.connectable);
 
   const orientationMeta = ORIENTATIONS.find((item) => item.value === orientation) || ORIENTATIONS[0];
   const targetDuration = sceneCount * sceneSeconds;
@@ -69,7 +77,7 @@ export default function NewProjectPage() {
           target_duration_seconds: targetDuration,
           auto_start: autoStart,
           start_planning: true,
-          provider: "simulated",
+          provider,
           voiceover_instructions: voiceover.trim() || null,
           music_instructions: music.trim() || null,
           characters: characters
@@ -236,6 +244,28 @@ export default function NewProjectPage() {
         </section>
 
         <section className="card space-y-4 p-5">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Render engine</h2>
+          <div>
+            <label className="label" htmlFor="provider">
+              Video provider
+            </label>
+            <select id="provider" className="input" value={provider} onChange={(e) => setProvider(e.target.value)}>
+              <option value="simulated">Simulated (test renders)</option>
+              {taaftEnabled ? (
+                <option value="taaft" disabled={!taaftConnected}>
+                  TAAFT (real automation){taaftConnected ? "" : " — connect in Settings first"}
+                </option>
+              ) : null}
+            </select>
+            {provider === "taaft" && !taaftConnected ? (
+              <p className="mt-1 text-xs text-amber-300">
+                Connect your TAAFT session in Settings → Providers before generating with TAAFT.
+              </p>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="card space-y-4 p-5">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Audio and workflow</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -262,8 +292,9 @@ export default function NewProjectPage() {
             </span>
           </label>
           <p className="rounded-xl bg-amber-500/5 px-3 py-2 text-xs leading-relaxed text-amber-200/80">
-            Development provider: <strong>simulated</strong>. It renders real MP4 test clips. TAAFT automation remains
-            disabled pending written provider authorization.
+            {provider === "taaft"
+              ? "Engine: TAAFT (real automation). Each scene is submitted to your connected TAAFT account and the finished clip is downloaded automatically. Scenes take a few minutes each."
+              : "Development provider: simulated. It renders real MP4 test clips."}
           </p>
         </section>
 

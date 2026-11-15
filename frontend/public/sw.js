@@ -1,5 +1,6 @@
-const CACHE = "storyforge-shell-v1";
-const OFFLINE_ASSETS = ["/", "/manifest.webmanifest", "/icon.svg"];
+﻿const CACHE = "storyforge-shell-v2";
+const SCOPE = new URL(self.registration.scope).pathname;
+const OFFLINE_ASSETS = [SCOPE, `${SCOPE}manifest.webmanifest`, `${SCOPE}icon.svg`];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(OFFLINE_ASSETS)).catch(() => undefined));
@@ -21,7 +22,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith("/api/")) return;
+  if (url.pathname.includes("/api/")) return;
   event.respondWith(
     fetch(request)
       .then((response) => {
@@ -29,6 +30,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => undefined);
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match("/"))),
+      .catch(() => caches.match(request).then((cached) => cached || caches.match(SCOPE))),
   );
 });
