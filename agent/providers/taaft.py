@@ -40,6 +40,10 @@ STEALTH_ARGS = [
     "--disable-extensions",
     "--disable-background-networking",
     "--disable-component-extensions-with-background-pages",
+    # Aggressive single-process mode: the container cannot afford multiple
+    # chromium processes. Stability is acceptable for short automation flows.
+    "--single-process",
+    "--no-zygote",
 ]
 
 FEASIBILITY_MESSAGE = (
