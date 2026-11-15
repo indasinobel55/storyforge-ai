@@ -47,9 +47,9 @@ def _validate_storage_state(raw: str) -> str:
     return raw
 
 
-def _get_taaft_account(db: AsyncSession, user_id: str) -> ProviderAccount:
+async def _get_taaft_account(db: AsyncSession, user_id: str) -> ProviderAccount | None:
     return (
-        db.execute(
+        await db.execute(
             select(ProviderAccount).where(
                 ProviderAccount.user_id == user_id, ProviderAccount.provider == "taaft"
             )
