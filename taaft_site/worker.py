@@ -87,8 +87,16 @@ class JobRunner:
             raise AgentError("server is missing GITHUB_REPO/GITHUB_TOKEN for dispatch")
         return repo, token
 
+    def _site_config(self) -> tuple[str, str]:
+        site_url = os.environ.get("SITE_PUBLIC_URL", "").strip().rstrip("/")
+        token = os.environ.get("SITE_TOKEN", "").strip()
+        if not site_url or not token:
+            raise AgentError("server is missing SITE_PUBLIC_URL/SITE_TOKEN for dispatch")
+        return site_url, token
+
     def dispatch_job(self, job: dict[str, Any]) -> None:
         repo, token = self._github_config()
+        site_url, site_token = self._site_config()
         resp = requests.post(
             f"https://api.github.com/repos/{repo}/dispatches",
             headers={
@@ -102,6 +110,8 @@ class JobRunner:
                     "job_id": job["job_id"],
                     "prompt": job["prompt"],
                     "scene_count": job["scene_count"],
+                    "site_url": site_url,
+                    "site_token": site_token,
                 },
             },
             timeout=60,
