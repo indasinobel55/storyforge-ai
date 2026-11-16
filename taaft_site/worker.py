@@ -61,6 +61,7 @@ class JobRunner:
     def __init__(self) -> None:
         self.jobs: dict[str, dict[str, Any]] = {}
         self._lock = threading.Lock()
+        self._active: str | None = None
 
     # ----- session management -----
 
@@ -140,6 +141,7 @@ class JobRunner:
             self.jobs[job_id] = job
         self.dispatch_job(job)
         job["status"] = "dispatched"
+        self._active = job_id
         return job
 
     # ----- runner callbacks (called by GitHub Actions via the API) -----
@@ -179,6 +181,8 @@ class JobRunner:
         job = self.jobs.get(job_id)
         if job is None:
             raise KeyError(job_id)
+        if self._active == job_id:
+            self._active = None
         if error:
             job["status"] = "failed"
             job["error"] = error[:600]
