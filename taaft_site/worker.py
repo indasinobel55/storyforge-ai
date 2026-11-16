@@ -122,6 +122,9 @@ class JobRunner:
 
     # ----- job management -----
 
+    def public_view(self, job: dict[str, Any]) -> dict[str, Any]:
+        return job  # plain dicts already JSON-safe
+
     def create_job(self, prompt: str, scene_count: int) -> dict[str, Any]:
         scene_count = max(1, min(int(scene_count), 8))
         job_id = uuid.uuid4().hex[:12]
