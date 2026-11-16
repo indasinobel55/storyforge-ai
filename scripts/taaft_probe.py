@@ -1,15 +1,24 @@
 """Probe whether TAAFT/Cloudflare is passable from a datacenter IP.
 
-Runs headed chromium (under xvfb on GitHub Actions) with NO cookies and
-reports: page title evolution, generator presence, login form availability,
-and saves screenshots + a fresh storage_state for inspection.
+Modes (env PROBE_MODE, default "fresh"):
+  fresh    - headed chromium, NO cookies.
+  filtered - fetch the site's storage_state, strip Cloudflare cookies
+             (cf_* are bound to the originating IP), keep site auth
+             cookies, then load the generator page.
+Env when filtered: SITE_URL, SITE_TOKEN.
+
+Reports: page title evolution, generator presence, login form availability,
+and saves screenshots + a storage_state for inspection.
 """
 
 from __future__ import annotations
 
+import json
+import os
 import time
 from pathlib import Path
 
+import requests
 from playwright.sync_api import sync_playwright
 
 GEN_URL = "https://theresanaiforthat.com/@taaft/video-generator/?ref=header"
@@ -22,8 +31,34 @@ def log(msg: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
+def filtered_session(dest: Path) -> bool:
+    site = os.environ["SITE_URL"].rstrip("/")
+    token = os.environ["SITE_TOKEN"]
+    r = requests.get(f"{site}/api/session/file", headers={"X-Site-Token": token}, timeout=120)
+    if r.status_code != 200:
+        log(f"no session on site: HTTP {r.status_code}")
+        return False
+    state = r.json()
+    cookies = state.get("cookies", [])
+    kept = [c for c in cookies if not c.get("name", "").lower().startswith("cf")]
+    log(f"session cookies: {len(cookies)} total, {len(cookies) - len(kept)} cf_* stripped, {len(kept)} kept")
+    state["cookies"] = kept
+    dest.write_text(json.dumps(state), encoding="utf-8")
+    return bool(kept)
+
+
 def main() -> None:
     OUT.mkdir(exist_ok=True)
+    mode = os.environ.get("PROBE_MODE", "fresh").strip().lower()
+    log(f"probe mode: {mode}")
+
+    session_file: Path | None = None
+    if mode == "filtered":
+        session_file = OUT / "filtered_state.json"
+        if not filtered_session(session_file):
+            log("filtered mode needs a session on the site; aborting")
+            return
+
     with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=False,
@@ -35,6 +70,10 @@ def main() -> None:
             ],
         )
         context = browser.new_context(viewport={"width": 1440, "height": 1100})
+        if session_file is not None:
+            context = browser.new_context(
+                storage_state=str(session_file), viewport={"width": 1440, "height": 1100}
+            )
         page = context.new_page()
 
         log("navigating GEN_URL (no cookies) ...")

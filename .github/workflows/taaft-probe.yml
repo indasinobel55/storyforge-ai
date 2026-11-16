@@ -2,6 +2,11 @@ name: taaft-probe
 
 on:
   workflow_dispatch:
+    inputs:
+      probe_mode:
+        description: "fresh (no cookies) or filtered (site session minus cf_* cookies)"
+        required: false
+        default: "fresh"
 
 jobs:
   probe:
@@ -17,8 +22,12 @@ jobs:
           pip install playwright
           python -m playwright install --with-deps chromium
           sudo apt-get update && sudo apt-get install -y xvfb
-      - name: Probe TAAFT gate (headed under xvfb, fresh session)
+      - name: Probe TAAFT gate (headed under xvfb)
         run: xvfb-run -a python scripts/taaft_probe.py
+        env:
+          PROBE_MODE: ${{ github.event.inputs.probe_mode || 'fresh' }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          SITE_TOKEN: ${{ secrets.SITE_TOKEN }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

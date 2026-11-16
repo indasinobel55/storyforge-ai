@@ -142,7 +142,21 @@ class JobRunner:
         }
         with self._lock:
             self.jobs[job_id] = job
-        self.dispatch_job(job)
+        if os.environ.get("JOB_DISPATCH", "github").strip().lower() == "github":
+            self.dispatch_job(job)
+            job["status"] = "dispatched"
+            self._active = job_id
+        else:
+            # external runner mode: job stays queued until a runner claims it
+            job["status"] = "queued"
+        return job
+
+    def claim_job(self, job_id: str) -> dict[str, Any]:
+        job = self.jobs.get(job_id)
+        if job is None:
+            raise KeyError(job_id)
+        if job["status"] != "queued":
+            raise ValueError(f"job {job_id} is {job['status']}, not queued")
         job["status"] = "dispatched"
         self._active = job_id
         return job

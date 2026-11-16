@@ -89,6 +89,18 @@ def get_job(job_id: str) -> dict:
     return runner.public_view(job)
 
 
+@app.post("/api/jobs/{job_id}/claim")
+def claim_job(job_id: str, x_site_token: str | None = Header(default=None)) -> dict:
+    _check_token(x_site_token)
+    try:
+        job = runner.claim_job(job_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="unknown job") from None
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    return runner.public_view(job)
+
+
 @app.get("/api/jobs/{job_id}/files/{filename}")
 def job_file(job_id: str, filename: str) -> FileResponse:
     job = runner.jobs.get(job_id)

@@ -1,8 +1,11 @@
-"""GitHub Actions worker for the TAAFT-only site.
+"""TAAFT job runner.
 
-Runs on a free ubuntu runner (7GB RAM): fetches the job + TAAFT session from
-the site, automates TAAFT scene by scene (extend chaining with last-frame
-references), and uploads progress + finished mp4s back to the site.
+Default mode (used by GitHub Actions): the job id comes from the JOB_ID env
+var and a single job is rendered.
+
+Poll mode (used by an always-on external runner, e.g. Oracle free VM): set
+``RUNNER_MODE=poll``; the process loops forever, claiming queued jobs from
+the site (``POST /api/jobs/{id}/claim``) and rendering them one at a time.
 """
 
 from __future__ import annotations
@@ -20,8 +23,7 @@ from taaft_site.worker import extract_last_frame, normalize_clip
 
 SITE_URL = os.environ["SITE_URL"].rstrip("/")
 SITE_TOKEN = os.environ["SITE_TOKEN"]
-JOB_ID = os.environ["JOB_ID"]
-WORK_DIR = Path(os.environ.get("RUNNER_TEMP", "/tmp")) / "taaft" / JOB_ID
+WORK_BASE = Path(os.environ.get("RUNNER_TEMP", "/tmp")) / "taaft"
 
 
 def api(method: str, path: str, **kwargs) -> requests.Response:
@@ -34,10 +36,10 @@ def log(msg: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
-def progress(scene: int, status: str, generation_id: str | None = None) -> None:
+def progress(job_id: str, scene: int, status: str, generation_id: str | None = None) -> None:
     for attempt in range(3):
         try:
-            r = api("POST", f"/api/jobs/{JOB_ID}/progress",
+            r = api("POST", f"/api/jobs/{job_id}/progress",
                     json={"scene": scene, "status": status, "generation_id": generation_id})
             if r.status_code == 200:
                 return
@@ -47,14 +49,14 @@ def progress(scene: int, status: str, generation_id: str | None = None) -> None:
         time.sleep(5 * (attempt + 1))
 
 
-def upload_file(scene: int, path: Path) -> None:
+def upload_file(job_id: str, scene: int, path: Path) -> None:
     for attempt in range(4):
         try:
             with open(path, "rb") as f:
-                r = api("POST", f"/api/jobs/{JOB_ID}/files/{path.name}",
+                r = api("POST", f"/api/jobs/{job_id}/files/{path.name}",
                         files={"file": (path.name, f, "video/mp4")})
             if r.status_code == 200:
-                progress(scene, "done", None)
+                progress(job_id, scene, "done", None)
                 return
             log(f"upload HTTP {r.status_code}: {r.text[:200]}")
         except Exception as exc:  # noqa: BLE001
@@ -63,18 +65,24 @@ def upload_file(scene: int, path: Path) -> None:
     raise AgentError(f"could not upload {path.name}")
 
 
-def main() -> None:
-    job = api("GET", f"/api/jobs/{JOB_ID}").json()
-    prompt = job["prompt"]
-    scene_count = int(job["scene_count"])
-    log(f"job {JOB_ID}: {scene_count} scene(s)")
-
+def _fetch_session(work_dir: Path) -> Path:
     session_resp = api("GET", "/api/session/file")
     session_resp.raise_for_status()
-    WORK_DIR.mkdir(parents=True, exist_ok=True)
-    session_path = WORK_DIR / "session.json"
+    work_dir.mkdir(parents=True, exist_ok=True)
+    session_path = work_dir / "session.json"
     session_path.write_bytes(session_resp.content)
     log(f"session fetched ({len(session_resp.content)} bytes)")
+    return session_path
+
+
+def render_job(job_id: str) -> None:
+    work_dir = WORK_BASE / job_id
+    job = api("GET", f"/api/jobs/{job_id}").json()
+    prompt = job["prompt"]
+    scene_count = int(job["scene_count"])
+    log(f"job {job_id}: {scene_count} scene(s)")
+
+    session_path = _fetch_session(work_dir)
 
     provider = TaaftProvider(
         enabled=True,
@@ -99,17 +107,17 @@ def main() -> None:
                         "Keep characters, wardrobe, environment, lighting and film style consistent "
                         "with the previous shot."
                     )
-                raw = WORK_DIR / f"scene_{scene:02d}_raw.mp4"
-                final = WORK_DIR / f"scene_{scene:02d}.mp4"
+                raw = work_dir / f"scene_{scene:02d}_raw.mp4"
+                final = work_dir / f"scene_{scene:02d}.mp4"
 
                 reference: Path | None = None
                 if parent_clip is not None:
-                    progress(scene, "reference")
-                    reference = extract_last_frame(parent_clip, WORK_DIR / f"frame_{scene - 1:02d}.png")
+                    progress(job_id, scene, "reference")
+                    reference = extract_last_frame(parent_clip, work_dir / f"frame_{scene - 1:02d}.png")
 
                 generation_id: str | None = None
                 if parent_id is not None:
-                    progress(scene, "extending")
+                    progress(job_id, scene, "extending")
                     try:
                         raw_data = provider._sync_extend(
                             parent_id, scene_prompt, reference, provider.tier, provider.orientation
@@ -119,12 +127,12 @@ def main() -> None:
                         log(f"extend failed, falling back to fresh submit: {exc}")
                         generation_id = None
                 if generation_id is None:
-                    progress(scene, "submitting")
+                    progress(job_id, scene, "submitting")
                     submit_prompt = provider.REFERENCE_PREFIX + scene_prompt if reference else scene_prompt
                     raw_data = provider._sync_submit(submit_prompt, provider.tier, provider.orientation, reference)
                     generation_id = str(raw_data.get("id"))
 
-                progress(scene, "rendering", generation_id)
+                progress(job_id, scene, "rendering", generation_id)
                 done = provider._sync_status(generation_id, wait=True)
                 status = str(done.get("status") or "").lower()
                 if status not in {"succeeded", "success", "completed"}:
@@ -135,7 +143,7 @@ def main() -> None:
                 if not video_url:
                     raise AgentError(f"scene {scene} finished without a video URL")
 
-                progress(scene, "downloading")
+                progress(job_id, scene, "downloading")
                 headers = {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
                     "Referer": "https://www.thisagentdoesnotexist.com/",
@@ -144,12 +152,12 @@ def main() -> None:
                 resp.raise_for_status()
                 raw.write_bytes(resp.content)
 
-                progress(scene, "normalizing")
+                progress(job_id, scene, "normalizing")
                 normalize_clip(raw, final)
                 raw.unlink(missing_ok=True)
 
-                progress(scene, "uploading")
-                upload_file(scene, final)
+                progress(job_id, scene, "uploading")
+                upload_file(job_id, scene, final)
 
                 parent_id = generation_id
                 parent_clip = final
@@ -159,7 +167,7 @@ def main() -> None:
 
     for attempt in range(3):
         try:
-            r = api("POST", f"/api/jobs/{JOB_ID}/complete", json={"error": error})
+            r = api("POST", f"/api/jobs/{job_id}/complete", json={"error": error})
             if r.status_code == 200:
                 break
         except Exception as exc:  # noqa: BLE001
@@ -167,6 +175,53 @@ def main() -> None:
         time.sleep(10 * (attempt + 1))
     if error:
         raise SystemExit(1)
+
+
+def claim_queued_job() -> str | None:
+    try:
+        listing = api("GET", "/api/jobs").json()
+    except Exception as exc:  # noqa: BLE001
+        log(f"job list failed: {exc}")
+        return None
+    for job in listing.get("jobs", []):
+        if job.get("status") != "queued":
+            continue
+        job_id = job.get("job_id")
+        if not job_id:
+            continue
+        try:
+            r = api("POST", f"/api/jobs/{job_id}/claim")
+            if r.status_code == 200:
+                return job_id
+            log(f"claim {job_id} -> HTTP {r.status_code} {r.text[:150]}")
+        except Exception as exc:  # noqa: BLE001
+            log(f"claim {job_id} failed: {exc}")
+    return None
+
+
+def poll_loop() -> None:
+    log(f"poll mode: watching {SITE_URL} for queued jobs")
+    idle_logged = False
+    while True:
+        job_id = claim_queued_job()
+        if job_id is None:
+            if not idle_logged:
+                log("no queued jobs; idling")
+                idle_logged = True
+            time.sleep(30)
+            continue
+        idle_logged = False
+        try:
+            render_job(job_id)
+        except Exception as exc:  # noqa: BLE001
+            log(f"render_job crashed: {type(exc).__name__}: {exc}"[:400])
+
+
+def main() -> None:
+    if os.environ.get("RUNNER_MODE", "").strip().lower() == "poll":
+        poll_loop()
+        return
+    render_job(os.environ["JOB_ID"])
 
 
 if __name__ == "__main__":
