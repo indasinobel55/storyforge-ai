@@ -27,4 +27,4 @@ jobs:
           SITE_URL: ${{ github.event.client_payload.site_url }}
           SITE_TOKEN: ${{ github.event.client_payload.site_token }}
           JOB_ID: ${{ github.event.client_payload.job_id }}
-        run: python taaft_site/runner_job.py
+        run: python -m taaft_site.runner_job
